@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import Link from "next/link";
+import { DemoLogin } from "@/app/auth/_components/demo-login";
 import { LoginForm } from "@/app/auth/_components/login-form";
 import {
   Card,
@@ -24,6 +25,7 @@ export default function LoginPage() {
         </CardHeader>
         <CardContent className="space-y-6">
           <LoginForm />
+          <DemoLogin />
           <p className="text-center text-sm text-muted-foreground">
             New here?{" "}
             <Link href="/auth/register" className="font-medium underline">

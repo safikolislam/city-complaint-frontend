@@ -26,8 +26,10 @@ interface UserMenuProps {
 export function UserMenu({ user, dashboardHref }: UserMenuProps) {
   const router = useRouter();
   const { logout, pending } = useLogout();
-  const label = user.name ?? user.email ?? user.role;
-  const initial = label.charAt(0).toUpperCase();
+  const displayName = user.name ?? user.role;
+  const initial = (user.name ?? user.email ?? user.role)
+    .charAt(0)
+    .toUpperCase();
 
   return (
     <DropdownMenu>
@@ -41,7 +43,12 @@ export function UserMenu({ user, dashboardHref }: UserMenuProps) {
       </DropdownMenuTrigger>
       <DropdownMenuContent align="end" className="w-56">
         <div className="flex flex-col px-2 py-1.5">
-          <span className="truncate text-sm font-medium">{label}</span>
+          <span className="truncate text-sm font-medium">{displayName}</span>
+          {user.email && (
+            <span className="truncate text-xs text-muted-foreground">
+              {user.email}
+            </span>
+          )}
           <span className="text-xs capitalize text-muted-foreground">
             {user.role.toLowerCase()}
           </span>
