@@ -9,6 +9,7 @@ export interface Profile {
   phone?: string | null;
   role: Role;
   staffPosition?: StaffPosition | null;
+  createdAt: string;
 }
 
 export const getProfile = cache(() => authApi<Profile>("/users/me"));
