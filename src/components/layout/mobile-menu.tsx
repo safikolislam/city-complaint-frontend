@@ -65,7 +65,11 @@ export function MobileMenu({ user, dashboardHref }: MobileMenuProps) {
                   <LayoutDashboard className="size-4" />
                   Dashboard
                 </Link>
-                <Button variant="destructive" onClick={logout} disabled={pending}>
+                <Button
+                  variant="destructive"
+                  onClick={logout}
+                  disabled={pending}
+                >
                   <LogOut className="size-4" />
                   {pending ? "Logging out..." : "Logout"}
                 </Button>

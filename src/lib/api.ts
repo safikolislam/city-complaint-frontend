@@ -1,3 +1,5 @@
+import type { Meta } from "@/types/api";
+
 const BASE_URL = process.env.API_BASE_URL ?? "http://localhost:5000/api/v1";
 
 export interface ApiErrorItem {
@@ -9,9 +11,9 @@ interface ApiEnvelope<T> {
   success: boolean;
   message: string;
   data: T;
+  meta?: Meta;
   errors?: unknown;
 }
-
 export class ApiError extends Error {
   status: number;
   errors: ApiErrorItem[];
@@ -78,10 +80,7 @@ export async function apiRaw<T>(
     });
   } catch (error) {
     console.error(`[api] ${method} ${BASE_URL}${path} failed:`, error);
-    throw new ApiError(
-      "সার্ভারের সাথে সংযোগ করা যাচ্ছে না। Backend চালু আছে কিনা দেখুন।",
-      503,
-    );
+    throw new ApiError("cannot connected the backend", 503);
   }
 
   const json = (await res.json().catch(() => null)) as ApiEnvelope<T> | null;
