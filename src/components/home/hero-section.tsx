@@ -28,7 +28,10 @@ const HeroSection = () => {
           department, and follow every step from assignment to resolution.
         </p>
         <div className="flex flex-wrap justify-center gap-3">
-          <Link href="/auth/register" className={buttonVariants({ size: "lg" })}>
+          <Link
+            href="/auth/register"
+            className={buttonVariants({ size: "lg" })}
+          >
             Get started
             <ArrowRight className="ml-2 size-4" />
           </Link>

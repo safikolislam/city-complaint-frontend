@@ -1,5 +1,10 @@
-
-import { CheckCircle2, ClipboardList, Send, Wrench, ArrowRight } from "lucide-react";
+import {
+  CheckCircle2,
+  ClipboardList,
+  Send,
+  Wrench,
+  ArrowRight,
+} from "lucide-react";
 
 const steps = [
   {
@@ -35,7 +40,10 @@ const HowItWorks = () => {
           SIMPLE PROCESS
         </span>
         <h2 className="mt-3 text-3xl font-extrabold tracking-tight sm:text-4xl md:text-5xl">
-          How it <span className="bg-gradient-to-r from-primary to-primary/60 bg-clip-text text-transparent">works</span>
+          How it{" "}
+          <span className="bg-gradient-to-r from-primary to-primary/60 bg-clip-text text-transparent">
+            works
+          </span>
         </h2>
         <p className="mx-auto mt-3 max-w-xl text-muted-foreground text-sm sm:text-base">
           Track and resolve your issues seamlessly in four simple steps.
@@ -49,7 +57,6 @@ const HowItWorks = () => {
             className="group relative flex flex-col justify-between rounded-2xl border bg-card/60 p-6 backdrop-blur-md shadow-sm transition-all duration-300 hover:-translate-y-1.5 hover:border-primary/50 hover:shadow-lg hover:shadow-primary/5"
           >
             <div>
-            
               <div className="flex items-center justify-between">
                 <span className="flex size-12 items-center justify-center rounded-xl bg-primary/10 text-primary transition-transform duration-300 group-hover:scale-110 group-hover:rotate-3 group-hover:bg-primary group-hover:text-primary-foreground">
                   <Icon className="size-6" />
@@ -59,7 +66,6 @@ const HowItWorks = () => {
                 </span>
               </div>
 
-           
               <h3 className="mt-6 text-lg font-bold tracking-tight text-card-foreground group-hover:text-primary transition-colors">
                 {title}
               </h3>
@@ -68,7 +74,6 @@ const HowItWorks = () => {
               </p>
             </div>
 
-          
             {i < steps.length - 1 && (
               <div className="hidden lg:block absolute -right-3 top-1/2 -translate-y-1/2 z-10 text-muted-foreground/30 transition-colors group-hover:text-primary/50">
                 <ArrowRight className="size-5" />
@@ -82,4 +87,3 @@ const HowItWorks = () => {
 };
 
 export default HowItWorks;
-
