@@ -1,9 +1,15 @@
 import Link from "next/link";
 import { MobileMenu } from "@/components/layout/mobile-menu";
+import { UserMenu } from "@/components/layout/user-menu";
 import { buttonVariants } from "@/components/ui/button";
+import { roleHome } from "@/config/routes";
 import { siteConfig } from "@/config/site";
+import { getCurrentUser } from "@/lib/current-user";
 
-export function PublicNavbar() {
+export async function PublicNavbar() {
+  const user = await getCurrentUser();
+  const dashboardHref = user ? roleHome[user.role] : undefined;
+
   return (
     <header className="sticky top-0 z-40 border-b bg-background/90 backdrop-blur">
       <div className="mx-auto flex h-16 max-w-6xl items-center justify-between px-4">
@@ -24,21 +30,27 @@ export function PublicNavbar() {
         </nav>
 
         <div className="hidden items-center gap-2 md:flex">
-          <Link
-            href="/auth/login"
-            className={buttonVariants({ variant: "ghost", size: "sm" })}
-          >
-            Login
-          </Link>
-          <Link
-            href="/auth/register"
-            className={buttonVariants({ size: "sm" })}
-          >
-            Register
-          </Link>
+          {user && dashboardHref ? (
+            <UserMenu user={user} dashboardHref={dashboardHref} />
+          ) : (
+            <>
+              <Link
+                href="/auth/login"
+                className={buttonVariants({ variant: "ghost", size: "sm" })}
+              >
+                Login
+              </Link>
+              <Link
+                href="/auth/register"
+                className={buttonVariants({ size: "sm" })}
+              >
+                Register
+              </Link>
+            </>
+          )}
         </div>
 
-        <MobileMenu />
+        <MobileMenu user={user} dashboardHref={dashboardHref} />
       </div>
     </header>
   );

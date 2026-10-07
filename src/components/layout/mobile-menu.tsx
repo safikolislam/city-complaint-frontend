@@ -1,8 +1,9 @@
 "use client";
 
-import { Menu } from "lucide-react";
+import { LayoutDashboard, LogOut, Menu } from "lucide-react";
 import Link from "next/link";
 import { useState } from "react";
+import type { NavUser } from "@/components/layout/user-menu";
 import { Button, buttonVariants } from "@/components/ui/button";
 import {
   Sheet,
@@ -11,10 +12,17 @@ import {
   SheetTitle,
 } from "@/components/ui/sheet";
 import { siteConfig } from "@/config/site";
+import { useLogout } from "@/hooks/use-logout";
 
-export function MobileMenu() {
+interface MobileMenuProps {
+  user: NavUser | null;
+  dashboardHref?: string;
+}
+
+export function MobileMenu({ user, dashboardHref }: MobileMenuProps) {
   const [open, setOpen] = useState(false);
   const close = () => setOpen(false);
+  const { logout, pending } = useLogout(close);
 
   return (
     <div className="md:hidden">
@@ -47,20 +55,39 @@ export function MobileMenu() {
           </nav>
 
           <div className="mt-4 flex flex-col gap-2 px-4">
-            <Link
-              href="/auth/login"
-              onClick={close}
-              className={buttonVariants({ variant: "outline" })}
-            >
-              Login
-            </Link>
-            <Link
-              href="/auth/register"
-              onClick={close}
-              className={buttonVariants()}
-            >
-              Register
-            </Link>
+            {user && dashboardHref ? (
+              <>
+                <Link
+                  href={dashboardHref}
+                  onClick={close}
+                  className={buttonVariants({ variant: "outline" })}
+                >
+                  <LayoutDashboard className="size-4" />
+                  Dashboard
+                </Link>
+                <Button variant="destructive" onClick={logout} disabled={pending}>
+                  <LogOut className="size-4" />
+                  {pending ? "Logging out..." : "Logout"}
+                </Button>
+              </>
+            ) : (
+              <>
+                <Link
+                  href="/auth/login"
+                  onClick={close}
+                  className={buttonVariants({ variant: "outline" })}
+                >
+                  Login
+                </Link>
+                <Link
+                  href="/auth/register"
+                  onClick={close}
+                  className={buttonVariants()}
+                >
+                  Register
+                </Link>
+              </>
+            )}
           </div>
         </SheetContent>
       </Sheet>
