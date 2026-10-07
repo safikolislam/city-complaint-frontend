@@ -7,24 +7,30 @@ import { toast } from "sonner";
 import { FormField } from "@/components/shared/form-field";
 import { PasswordField } from "@/components/shared/password-field";
 import { Button } from "@/components/ui/button";
-import { type LoginValues, loginSchema } from "@/lib/validations/auth";
-import { loginAction } from "../_actions/authAction";
+import { type RegisterValues, registerSchema } from "@/lib/validations/auth";
+import { registerAction } from "../_actions/authAction";
 
-export function LoginForm() {
+export function RegisterForm() {
 	const router = useRouter();
 	const {
 		register,
 		handleSubmit,
 		formState: { errors, isSubmitting },
-	} = useForm<LoginValues>({ resolver: zodResolver(loginSchema) });
+	} = useForm<RegisterValues>({ resolver: zodResolver(registerSchema) });
 
-	const onSubmit = async (values: LoginValues) => {
-		const result = await loginAction(values);
+	const onSubmit = async (values: RegisterValues) => {
+		const { name, email, phone, password } = values;
+		const result = await registerAction({
+			name,
+			email,
+			password,
+			...(phone ? { phone } : {}),
+		});
 		if (!result.success) {
 			toast.error(result.message);
 			return;
 		}
-		toast.success(result.message);
+		toast.success("Account created");
 		router.push(result.redirectTo ?? "/");
 		router.refresh();
 	};
@@ -32,23 +38,44 @@ export function LoginForm() {
 	return (
 		<form onSubmit={handleSubmit(onSubmit)} className="space-y-4" noValidate>
 			<FormField
+				id="name"
+				label="Full name"
+				autoComplete="name"
+				error={errors.name?.message}
+				{...register("name")}
+			/>
+			<FormField
 				id="email"
 				label="Email"
 				type="email"
 				autoComplete="email"
-				placeholder="you@example.com"
 				error={errors.email?.message}
 				{...register("email")}
+			/>
+			<FormField
+				id="phone"
+				label="Phone "
+				type="tel"
+				placeholder="01XXXXXXXXX"
+				error={errors.phone?.message}
+				{...register("phone")}
 			/>
 			<PasswordField
 				id="password"
 				label="Password"
-				autoComplete="current-password"
+				autoComplete="new-password"
 				error={errors.password?.message}
 				{...register("password")}
 			/>
+			<PasswordField
+				id="confirmPassword"
+				label="Confirm password"
+				autoComplete="new-password"
+				error={errors.confirmPassword?.message}
+				{...register("confirmPassword")}
+			/>
 			<Button type="submit" className="w-full" disabled={isSubmitting}>
-				{isSubmitting ? "Logging in..." : "Login"}
+				{isSubmitting ? "Creating account..." : "Create account"}
 			</Button>
 		</form>
 	);
