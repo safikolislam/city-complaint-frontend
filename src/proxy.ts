@@ -21,9 +21,9 @@ const PUBLIC_ROUTES = [
   "/statistics",
 ];
 const ROLE_AREAS: Record<string, Role> = {
-  "/admin": "ADMIN",
-  "/dashboard": "CITIZEN",
-  "/provider": "STAFF",
+  "/dashboard/admin": "ADMIN",
+  "/dashboard/staff": "STAFF",
+  "/dashboard/citizen": "CITIZEN",
 };
 
 const matches = (pathname: string, route: string) =>
