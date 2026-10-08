@@ -27,10 +27,10 @@ export default async function ProfilePage() {
   });
 
   return (
-    <div className="mx-auto w-full max-w-2xl space-y-6">
+    <div className="mx-auto w-full max-w-2xl space-y-6 mt-10">
       <div>
         <h1 className="text-2xl font-semibold">My profile</h1>
-        <p className="text-muted-foreground text-sm">
+        <p className="text-muted-foreground text-sm mt-2">
           Update your name, email and phone number.
         </p>
       </div>

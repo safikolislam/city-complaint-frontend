@@ -45,33 +45,46 @@ export function ProfileForm({ profile }: { profile: Profile }) {
   };
 
   return (
-    <form onSubmit={handleSubmit(onSubmit)} className="space-y-4" noValidate>
-      <FormField
-        id="name"
-        label="Full name"
-        autoComplete="name"
-        error={errors.name?.message}
-        {...register("name")}
-      />
-      <FormField
-        id="email"
-        label="Email"
-        type="email"
-        autoComplete="email"
-        error={errors.email?.message}
-        {...register("email")}
-      />
-      <FormField
-        id="phone"
-        label="Phone"
-        type="tel"
-        placeholder="01XXXXXXXXX"
-        error={errors.phone?.message}
-        {...register("phone")}
-      />
-      <Button type="submit" disabled={!isDirty || isSubmitting}>
-        {isSubmitting ? "Saving..." : "Save changes"}
-      </Button>
+    <form
+      onSubmit={handleSubmit(onSubmit)}
+      className="p-6 md:p-8 space-y-6"
+      noValidate
+    >
+      <div className="space-y-4">
+        <FormField
+          id="name"
+          label="Full name"
+          autoComplete="name"
+          error={errors.name?.message}
+          {...register("name")}
+        />
+        <FormField
+          id="email"
+          label="Email"
+          type="email"
+          autoComplete="email"
+          error={errors.email?.message}
+          {...register("email")}
+        />
+        <FormField
+          id="phone"
+          label="Phone"
+          type="tel"
+          placeholder="01XXXXXXXXX"
+          error={errors.phone?.message}
+          {...register("phone")}
+        />
+      </div>
+
+      <div className="pt-2 flex justify-start">
+        <Button
+          type="submit"
+          disabled={!isDirty || isSubmitting}
+          className="px-6"
+        >
+          {isSubmitting ? "Saving..." : "Save changes"}
+        </Button>
+      </div>
     </form>
   );
 }

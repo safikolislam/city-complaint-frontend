@@ -9,6 +9,7 @@ export interface ApiErrorItem {
 
 interface ApiEnvelope<T> {
   success: boolean;
+
   message: string;
   data: T;
   meta?: Meta;
