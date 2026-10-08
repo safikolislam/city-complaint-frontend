@@ -1,6 +1,6 @@
 import type { Role, StaffPosition } from "@/types/api";
 
-export type AdminStaffPosition = StaffPosition | "MANAGER";
+export type AdminStaffPosition = StaffPosition;
 
 export interface AdminStats {
   totalComplaints: number;
@@ -36,3 +36,24 @@ export interface Department {
   id: string;
   name: string;
 }
+
+export type UsersQuery = {
+  page: number;
+  limit: number;
+  role?: string;
+  search?: string;
+};
+
+export type ComplaintsQuery = {
+  page: number;
+  limit: number;
+  status?: string;
+  priority?: string;
+  search?: string;
+};
+
+export interface Department {
+  id: string;
+  name: string;
+}
+

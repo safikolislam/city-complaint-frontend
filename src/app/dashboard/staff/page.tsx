@@ -1,22 +1,29 @@
-import {
-  ComplaintList,
-  type ListSearchParams,
-} from "@/components/complaints/complaint-list";
-import { getMyAssigned } from "@/lib/complaints";
+import type { Metadata } from "next";
 
-export const metadata = { title: "My tasks" };
+import { getProfile } from "@/lib/profile";
+import { AssignedComplaints } from "@/components/staff/assigned-complaints";
 
-export default async function StaffPage({
-  searchParams,
-}: {
-  searchParams: Promise<ListSearchParams>;
-}) {
+
+export const metadata: Metadata = {
+  title: "Staff Dashboard",
+};
+
+export default async function StaffDashboardPage() {
+  const profile = await getProfile();
+
   return (
-    <ComplaintList
-      title="My tasks"
-      searchParams={await searchParams}
-      fetcher={getMyAssigned}
-      hrefBase="/dashboard/staff/tasks"
-    />
+    <div className="space-y-6">
+      <div>
+        <h1 className="text-2xl font-bold">
+          Welcome, {profile.name}
+        </h1>
+
+        <p className="text-sm text-muted-foreground">
+          Manage your assigned complaints and update their status.
+        </p>
+      </div>
+
+      <AssignedComplaints />
+    </div>
   );
 }

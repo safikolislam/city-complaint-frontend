@@ -3,7 +3,7 @@ import { z } from "zod";
 export const roleSchema = z
   .object({
     role: z.enum(["CITIZEN", "STAFF", "ADMIN"]),
-    staffPosition: z.enum(["", "OFFICER", "TECHNICIAN", "MANAGER"]),
+    staffPosition: z.enum(["", "OFFICER", "TECHNICIAN"]),
     departmentId: z.string(),
   })
   .refine(

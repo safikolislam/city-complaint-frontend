@@ -1,36 +1,31 @@
-import { ComplaintsTable } from "@/components/complaints/complaints-table";
-import { Pagination } from "@/components/shared/pagination";
+"use client";
 
-import type { Meta } from "@/types/api";
 import { ComplaintFilters } from "./complaint-filter";
-import { ComplaintItem, ComplaintQuery } from "@/types/complaint";
+import { AdminComplaintsTable } from "./complaints-table";
+import { Pagination } from "@/components/shared/pagination";
+import type { Meta } from "@/types/api";
+import type { ComplaintItem, ComplaintQuery } from "@/types/complaint";
 
 const LIMIT = 10;
 
-export interface ListSearchParams {
+interface ComplaintListProps {
+  title: string;
   page?: string;
   status?: string;
   search?: string;
-}
-
-interface ComplaintListProps {
-  title: string;
-  searchParams: ListSearchParams;
-  fetcher: (
-    query: ComplaintQuery,
-  ) => Promise<{ items: ComplaintItem[]; meta?: Meta }>;
+  fetcher: (query: ComplaintQuery) => Promise<{ items: ComplaintItem[]; meta?: Meta }>;
   hrefBase?: string;
 }
 
 export async function ComplaintList({
   title,
-  searchParams,
+  page,
+  status,
+  search,
   fetcher,
-  hrefBase,
 }: ComplaintListProps) {
-  const { page, status, search } = searchParams;
   const current = Math.max(Number(page) || 1, 1);
-  const { items, meta } = await fetcher({
+  const { items = [], meta } = await fetcher({
     page: current,
     limit: LIMIT,
     status,
@@ -46,11 +41,7 @@ export async function ComplaintList({
         </p>
       </div>
       <ComplaintFilters />
-      <ComplaintsTable
-        items={items}
-        filtered={Boolean(status || search)}
-        hrefBase={hrefBase}
-      />
+      <AdminComplaintsTable items={items} />
       <Pagination
         page={current}
         limit={LIMIT}

@@ -1,6 +1,6 @@
 import { Inbox } from "lucide-react";
-
-import { StatusBadge } from "@/components/complaints/status-badge";
+import { RoleDialog } from "@/components/admin/users/role-dialog";
+import { Badge } from "@/components/ui/badge";
 import { Card, CardContent } from "@/components/ui/card";
 import {
   Table,
@@ -10,17 +10,21 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
-import type { ComplaintItem } from "@/lib/complaints";
-import { DueCell } from "./due-cell";
-import { AssignDialog } from "./assign-dialog";
+import { formatDate, titleOf } from "@/lib/format";
+import type { AdminUser } from "@/types/admin";
 
-export function AdminComplaintsTable({ items }: { items: ComplaintItem[] }) {
+interface UsersTableProps {
+  items: AdminUser[];
+  currentUserId?: string;
+}
+
+export function UsersTable({ items, currentUserId }: UsersTableProps) {
   if (items.length === 0) {
     return (
       <Card>
         <CardContent className="flex flex-col items-center gap-2 py-16 text-center">
           <Inbox className="size-10 text-muted-foreground" />
-          <p className="font-medium">No complaints found</p>
+          <p className="font-medium">No users found</p>
           <p className="text-sm text-muted-foreground">
             Try changing your search or filter.
           </p>
@@ -35,35 +39,34 @@ export function AdminComplaintsTable({ items }: { items: ComplaintItem[] }) {
         <Table>
           <TableHeader>
             <TableRow>
-              <TableHead>Complaint</TableHead>
+              <TableHead>User</TableHead>
+              <TableHead>Role</TableHead>
+              <TableHead>Position</TableHead>
               <TableHead>Department</TableHead>
-              <TableHead>Priority</TableHead>
-              <TableHead>Status</TableHead>
-              <TableHead>Due</TableHead>
+              <TableHead>Joined</TableHead>
               <TableHead className="text-right">Action</TableHead>
             </TableRow>
           </TableHeader>
           <TableBody>
-            {items.map((item) => (
-              <TableRow key={item.id}>
+            {items.map((user) => (
+              <TableRow key={user.id}>
                 <TableCell>
-                  <p className="font-medium">{item.title}</p>
-                  <p className="text-xs text-muted-foreground">
-                    {item.category?.name}
-                  </p>
-                </TableCell>
-                <TableCell>{item.department?.name ?? "-"}</TableCell>
-                <TableCell className="capitalize">
-                  {item.priority?.toLowerCase() ?? "-"}
+                  <p className="font-medium">{user.name}</p>
+                  <p className="text-xs text-muted-foreground">{user.email}</p>
                 </TableCell>
                 <TableCell>
-                  <StatusBadge status={item.status} />
+                  <Badge variant="secondary">{titleOf(user.role)}</Badge>
                 </TableCell>
                 <TableCell>
-                  <DueCell item={item} />
+                  {user.staffPosition ? titleOf(user.staffPosition) : "-"}
                 </TableCell>
+                <TableCell>{user.department?.name ?? "-"}</TableCell>
+                <TableCell>{formatDate(user.createdAt)}</TableCell>
                 <TableCell className="text-right">
-                  <AssignDialog complaint={item} />
+                  <RoleDialog
+                    user={user}
+                    disabled={user.id === currentUserId}
+                  />
                 </TableCell>
               </TableRow>
             ))}

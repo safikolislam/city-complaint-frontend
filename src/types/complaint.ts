@@ -21,8 +21,8 @@ export interface ComplaintItem {
   address: string;
   dueAt?: string | null;
   createdAt: string;
-  category: { name: string };
-  department?: { name: string } | null;
+  category: { id?: string; name: string };
+  department?: { id: string; name: string } | null;
 }
 
 export interface StatusHistoryItem {
@@ -34,7 +34,7 @@ export interface StatusHistoryItem {
 
 export interface ComplaintDetail extends ComplaintItem {
   description: string;
-  department: { name: string };
+  department: { id: string; name: string };
   citizen: { id?: string; name: string; email: string };
   statusHistory: StatusHistoryItem[];
 }

@@ -1,6 +1,7 @@
 import { UsersTable } from "@/components/admin/users-table";
 import { ListFilters } from "@/components/shared/list-filters";
 import { Pagination } from "@/components/shared/pagination";
+import { getUsers } from "@/lib/admin";
 
 import { getProfile } from "@/lib/profile";
 

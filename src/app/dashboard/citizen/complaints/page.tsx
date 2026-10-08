@@ -1,10 +1,11 @@
 import type { Metadata } from "next";
 import { Suspense } from "react";
 
-import { ComplaintsTable } from "@/components/complaints/complaints-table";
+
 import { Pagination } from "@/components/shared/pagination";
 import { getComplaints } from "@/lib/complaints";
 import { ComplaintFilters } from "@/components/complaints/complaint-filter";
+import { AdminComplaintsTable } from "@/components/complaints/complaints-table";
 
 export const metadata: Metadata = { title: "My complaints" };
 
@@ -38,7 +39,7 @@ export default async function MyComplaintsPage({ searchParams }: Props) {
         <ComplaintFilters />
       </Suspense>
 
-      <ComplaintsTable items={items} filtered={Boolean(status || search)} />
+      <AdminComplaintsTable items={items} filtered={Boolean(status || search)} />
 
       {meta && (
         <Suspense fallback={null}>
