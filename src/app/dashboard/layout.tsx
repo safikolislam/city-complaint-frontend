@@ -1,24 +1,27 @@
 import { redirect } from "next/navigation";
+import type { ReactNode } from "react";
 import { DashboardShell } from "@/components/layout/dashboard-shell";
 import { QueryProvider } from "@/components/providers/query-provider";
+import { getCurrentUser } from "@/lib/current-user";
 import { getProfile } from "@/lib/profile";
-import { getSession } from "@/lib/session";
 
 export default async function DashboardLayout({
   children,
 }: {
-  children: React.ReactNode;
+  children: ReactNode;
 }) {
-  const session = await getSession();
-  if (!session) redirect("/auth/login");
+  const user = await getCurrentUser();
+  if (!user) redirect("/auth/login");
 
   const profile = await getProfile();
 
   return (
-    <QueryProvider>
-      <DashboardShell role={session.role} userName={profile.name}>
-        {children}
-      </DashboardShell>
-    </QueryProvider>
+    <DashboardShell
+      role={user.role}
+      position={profile.staffPosition}
+      userName={profile.name}
+    >
+      <QueryProvider>{children}</QueryProvider>
+    </DashboardShell>
   );
 }

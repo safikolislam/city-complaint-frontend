@@ -2,21 +2,21 @@ import {
   ComplaintList,
   type ListSearchParams,
 } from "@/components/complaints/complaint-list";
-import { getComplaints } from "@/lib/complaints";
+import { getMyAssigned } from "@/lib/complaints";
 
-export const metadata = { title: "All complaints" };
+export const metadata = { title: "My tasks" };
 
-export default async function Page({
+export default async function StaffPage({
   searchParams,
 }: {
   searchParams: Promise<ListSearchParams>;
 }) {
   return (
     <ComplaintList
-      title="All complaints"
+      title="My tasks"
       searchParams={await searchParams}
-      fetcher={getComplaints}
-      hrefBase="/dashboard/admin/complaints"
+      fetcher={getMyAssigned}
+      hrefBase="/dashboard/staff/tasks"
     />
   );
 }

@@ -1,16 +1,12 @@
 import {
-  BarChart3,
-  ClipboardList,
-  CreditCard,
-  FilePlus2,
   FileText,
   LayoutDashboard,
   type LucideIcon,
-  ScrollText,
   User,
   Users,
   Wrench,
 } from "lucide-react";
+import { staffHome } from "@/config/routes";
 import type { Role, StaffPosition } from "@/types/api";
 
 export interface NavItem {
@@ -20,61 +16,50 @@ export interface NavItem {
 }
 
 const profile: NavItem = {
-  label: "Profile",
+  label: "My Profile",
   href: "/dashboard/profile",
   icon: User,
 };
 
 export function getNav(role: Role, position?: StaffPosition | null): NavItem[] {
-  if (role === "CITIZEN") {
-    return [
-      { label: "Overview", href: "/dashboard/citizen", icon: LayoutDashboard },
-      {
-        label: "My Complaints",
-        href: "/dashboard/citizen/complaints",
-        icon: FileText,
-      },
-      {
-        label: "New Complaint",
-        href: "/dashboard/citizen/new",
-        icon: FilePlus2,
-      },
-      {
-        label: "Payments",
-        href: "/dashboard/citizen/payments",
-        icon: CreditCard,
-      },
-      profile,
-    ];
-  }
   if (role === "ADMIN") {
     return [
-      { label: "Overview", href: "/dashboard/admin", icon: BarChart3 },
+      { label: "Overview", href: "/dashboard/admin", icon: LayoutDashboard },
       {
         label: "Complaints",
         href: "/dashboard/admin/complaints",
         icon: FileText,
       },
       { label: "Users", href: "/dashboard/admin/users", icon: Users },
-      {
-        label: "Audit Logs",
-        href: "/dashboard/admin/reports",
-        icon: ScrollText,
-      },
       profile,
     ];
   }
-  if (position === "TECHNICIAN") {
+
+  if (role === "STAFF") {
+    if (position === "TECHNICIAN") {
+      return [
+        { label: "My Tasks", href: staffHome.TECHNICIAN, icon: Wrench },
+        profile,
+      ];
+    }
+    if (position === "OFFICER") {
+      return [
+        { label: "Complaints", href: staffHome.OFFICER, icon: FileText },
+        profile,
+      ];
+    }
     return [
-      { label: "My Tasks", href: "/dashboard/staff/technician", icon: Wrench },
+      { label: "Overview", href: "/dashboard/staff", icon: LayoutDashboard },
       profile,
     ];
   }
+
   return [
+    { label: "Overview", href: "/dashboard/citizen", icon: LayoutDashboard },
     {
-      label: "Overview",
-      href: "/dashboard/staff/officer",
-      icon: ClipboardList,
+      label: "My Complaints",
+      href: "/dashboard/citizen/complaints",
+      icon: FileText,
     },
     profile,
   ];

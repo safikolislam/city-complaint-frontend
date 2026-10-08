@@ -80,7 +80,6 @@ export async function apiRaw<T>(
       cache: "no-store",
     });
   } catch (error) {
-    console.error(`[api] ${method} ${BASE_URL}${path} failed:`, error);
     throw new ApiError("cannot connected the backend", 503);
   }
 

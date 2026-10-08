@@ -2,9 +2,8 @@ import {
   ComplaintList,
   type ListSearchParams,
 } from "@/components/complaints/complaint-list";
-import { getComplaints } from "@/lib/complaints";
 
-export const metadata = { title: "All complaints" };
+export const metadata = { title: "My complaints" };
 
 export default async function Page({
   searchParams,
@@ -13,10 +12,10 @@ export default async function Page({
 }) {
   return (
     <ComplaintList
-      title="All complaints"
+      title="My complaints"
       searchParams={await searchParams}
       fetcher={getComplaints}
-      hrefBase="/dashboard/admin/complaints"
+      hrefBase="/dashboard/citizen/complaints"
     />
   );
 }

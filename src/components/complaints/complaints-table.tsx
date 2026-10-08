@@ -1,4 +1,5 @@
 import { Inbox } from "lucide-react";
+import Link from "next/link";
 import { StatusBadge } from "@/components/complaints/status-badge";
 import { Card, CardContent } from "@/components/ui/card";
 import {
@@ -9,22 +10,20 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
-import type { ComplaintItem } from "@/lib/complaints";
+import { formatDate, titleOf } from "@/lib/format";
+import type { ComplaintItem } from "@/types/complaint";
 
-const formatDate = (value: string) =>
-  new Date(value).toLocaleDateString("en-GB", {
-    day: "numeric",
-    month: "short",
-    year: "numeric",
-  });
+interface ComplaintsTableProps {
+  items: ComplaintItem[];
+  filtered?: boolean;
+  hrefBase?: string;
+}
 
 export function ComplaintsTable({
   items,
-  filtered,
-}: {
-  items: ComplaintItem[];
-  filtered: boolean;
-}) {
+  filtered = false,
+  hrefBase,
+}: ComplaintsTableProps) {
   if (items.length === 0) {
     return (
       <Card>
@@ -34,7 +33,7 @@ export function ComplaintsTable({
           <p className="text-sm text-muted-foreground">
             {filtered
               ? "Try changing your search or filter."
-              : "Complaints you submit will appear here."}
+              : "Nothing here yet."}
           </p>
         </CardContent>
       </Card>
@@ -49,25 +48,32 @@ export function ComplaintsTable({
             <TableRow>
               <TableHead>Title</TableHead>
               <TableHead>Category</TableHead>
-              <TableHead>Department</TableHead>
               <TableHead>Priority</TableHead>
               <TableHead>Status</TableHead>
               <TableHead>Date</TableHead>
             </TableRow>
           </TableHeader>
           <TableBody>
-            {items.map((item) => (
-              <TableRow key={item.id}>
-                <TableCell className="font-medium">{item.title}</TableCell>
-                <TableCell>{item.category?.name ?? "-"}</TableCell>
-                <TableCell>{item.department?.name ?? "-"}</TableCell>
-                <TableCell className="capitalize">
-                  {item.priority?.toLowerCase() ?? "-"}
+            {items.map((c) => (
+              <TableRow key={c.id}>
+                <TableCell className="font-medium">
+                  {hrefBase ? (
+                    <Link
+                      href={`${hrefBase}/${c.id}`}
+                      className="hover:underline"
+                    >
+                      {c.title}
+                    </Link>
+                  ) : (
+                    c.title
+                  )}
                 </TableCell>
+                <TableCell>{c.category?.name ?? "-"}</TableCell>
+                <TableCell>{titleOf(c.priority)}</TableCell>
                 <TableCell>
-                  <StatusBadge status={item.status} />
+                  <StatusBadge status={c.status} />
                 </TableCell>
-                <TableCell>{formatDate(item.createdAt)}</TableCell>
+                <TableCell>{formatDate(c.createdAt)}</TableCell>
               </TableRow>
             ))}
           </TableBody>

@@ -1,46 +1,31 @@
-import { authApiFull } from "@/lib/auth-api";
-import type { Meta } from "@/types/api";
+import { authApi, authApiFull } from "@/lib/auth-api";
+import type {
+  ComplaintDetail,
+  ComplaintItem,
+  ComplaintQuery,
+} from "@/types/complaint";
 
-export type ComplaintStatus =
-  | "PENDING_PAYMENT"
-  | "PENDING"
-  | "ASSIGNED"
-  | "IN_PROGRESS"
-  | "RESOLVED"
-  | "CLOSED"
-  | "REOPENED"
-  | "REJECTED"
-  | "CANCELLED";
+export * from "@/types/complaint";
 
-export interface ComplaintItem {
-  id: string;
-  title: string;
-  type: "COMPLAINT" | "SERVICE_REQUEST";
-  status: ComplaintStatus;
-  priority: "LOW" | "MEDIUM" | "HIGH" | "URGENT";
-  address: string;
-  dueAt: string | null;
-  createdAt: string;
-  category: { id: string; name: string };
-  department: { id: string; name: string };
-}
+const MY_ASSIGNED_PATH = "/complaints/my-assigned";
 
-export interface ComplaintQuery {
-  page?: number;
-  limit?: number;
-  status?: string;
-  priority?: string;
-  search?: string;
-}
-
-export async function getComplaints(query: ComplaintQuery = {}) {
+async function list(path: string, query: ComplaintQuery) {
   const params = new URLSearchParams();
   for (const [key, value] of Object.entries(query)) {
     if (value !== undefined && value !== "") params.set(key, String(value));
   }
-
+  const qs = params.toString();
   const { data, meta } = await authApiFull<ComplaintItem[]>(
-    `/complaints?${params.toString()}`,
+    `${path}${qs ? `?${qs}` : ""}`,
   );
-  return { items: data, meta: meta as Meta | undefined };
+  return { items: data, meta };
 }
+
+export const getComplaints = (query: ComplaintQuery = {}) =>
+  list("/complaints", query);
+
+export const getMyAssigned = (query: ComplaintQuery = {}) =>
+  list(MY_ASSIGNED_PATH, query);
+
+export const getComplaint = (id: string) =>
+  authApi<ComplaintDetail>(`/complaints/${id}`);

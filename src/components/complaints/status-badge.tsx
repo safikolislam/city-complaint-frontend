@@ -1,5 +1,5 @@
 import { Badge } from "@/components/ui/badge";
-import type { ComplaintStatus } from "@/lib/complaints";
+import { ComplaintStatus } from "@/types/complaint";
 
 type Variant = "default" | "secondary" | "destructive" | "outline";
 
