@@ -3,18 +3,18 @@
 import { useQuery } from "@tanstack/react-query";
 import { ArrowLeft } from "lucide-react";
 import Link from "next/link";
+import { CitizenActions } from "@/components/complaints/citizen-actions";
 import { ComplaintInfo } from "@/components/complaints/complaint-info";
 import { StatusTimeline } from "@/components/complaints/status-timeline";
 import { TechnicianActions } from "@/components/complaints/technician-actions";
-
-import type { ComplaintDetail } from "@/lib/complaints";
 import { complaintKey } from "@/hooks/use-compliant-mutations";
 import { clientApi } from "@/lib/client-api";
+import type { ComplaintDetail } from "@/types/complaint";
 
 interface ComplaintDetailViewProps {
   id: string;
   initial: ComplaintDetail;
-  mode: "technician" | "view";
+  mode: "technician" | "citizen" | "view";
   backHref: string;
 }
 
@@ -43,6 +43,7 @@ export function ComplaintDetailView({
       {mode === "technician" ? (
         <TechnicianActions id={id} status={complaint.status} />
       ) : null}
+      {mode === "citizen" ? <CitizenActions complaint={complaint} /> : null}
       <StatusTimeline items={complaint.statusHistory} />
     </div>
   );

@@ -1,21 +1,11 @@
-import {
-  ComplaintList,
-  type ListSearchParams,
-} from "@/components/complaints/complaint-list";
+import { ComplaintDetailPage } from "@/components/complaints/detail-page";
 
-export const metadata = { title: "My complaints" };
-
-export default async function Page({
-  searchParams,
-}: {
-  searchParams: Promise<ListSearchParams>;
-}) {
+export default function Page({ params }: { params: Promise<{ id: string }> }) {
   return (
-    <ComplaintList
-      title="My complaints"
-      searchParams={await searchParams}
-      fetcher={getComplaints}
-      hrefBase="/dashboard/citizen/complaints"
+    <ComplaintDetailPage
+      params={params}
+      mode="citizen"
+      backHref="/dashboard/citizen/complaints"
     />
   );
 }

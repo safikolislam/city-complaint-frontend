@@ -1,24 +1,18 @@
-import type { Metadata } from "next";
 
-import CreateComplaintForm from "@/components/complaints/create-complaint-form";
+import { NewComplaintForm } from "@/components/complaints/new-complaint-form";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 
-export const metadata: Metadata = {
-  title: "Submit Complaint",
-  description: "Submit a new city complaint",
-};
+export const metadata = { title: "New complaint" };
 
 export default function NewComplaintPage() {
   return (
-    <div className="space-y-6">
-      <div>
-        <h1 className="text-2xl font-bold">Submit a Complaint</h1>
-
-        <p className="text-sm text-muted-foreground">
-          Report a problem in your area and help make your city better.
-        </p>
-      </div>
-
-      <CreateComplaintForm />
-    </div>
+    <Card className="mx-auto w-full max-w-2xl">
+      <CardHeader>
+        <CardTitle>New complaint</CardTitle>
+      </CardHeader>
+      <CardContent>
+        <NewComplaintForm/>
+      </CardContent>
+    </Card>
   );
 }

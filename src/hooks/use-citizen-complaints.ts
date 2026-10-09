@@ -1,36 +1,80 @@
 "use client";
 
-import { keepPreviousData, useQuery } from "@tanstack/react-query";
+import { useMutation, useQueryClient } from "@tanstack/react-query";
+import { useRouter } from "next/navigation";
+import { toast } from "sonner";
+import { complaintKey } from "@/hooks/use-compliant-mutations";
 import { clientApi } from "@/lib/client-api";
-import type { ComplaintItem } from "@/lib/complaints";
-import type { ComplaintsQuery } from "@/types/admin";
-import type { PagedResult } from "@/types/paged";
+import type {
+  CreateComplaintValues,
+  EditComplaintValues,
+} from "@/lib/validations/complaint";
+import type { ComplaintStatus } from "@/types/complaint";
 
-export function useCitizenComplaints(query: ComplaintsQuery) {
-  const queryString = new URLSearchParams();
-  if (query.page) queryString.set("page", String(query.page));
-  if (query.limit) queryString.set("limit", String(query.limit));
-  if (query.status) queryString.set("status", query.status);
-  if (query.search) queryString.set("search", query.search);
+const LIST = "/dashboard/citizen/complaints";
+const onError = (error: Error) => toast.error(error.message);
 
-  return useQuery({
-    queryKey: ["citizen-complaints", query],
-    queryFn: async (): Promise<PagedResult<ComplaintItem>> => {
-      const res = (await clientApi(
-        `/complaints?${queryString.toString()}`,
-      )) as any;
-
-      const raw = res?.data ?? res;
-      const items = raw?.items ?? raw?.data ?? (Array.isArray(raw) ? raw : []);
-      const meta = raw?.meta ?? {
-        page: query.page || 1,
-        limit: query.limit || 10,
-        total: items.length,
-        totalPage: 1,
-      };
-
-      return { items, meta };
+export function useCreateComplaint() {
+  const router = useRouter();
+  return useMutation({
+    mutationFn: (values: CreateComplaintValues) =>
+      clientApi<{ id: string; status: ComplaintStatus }>("/complaints", {
+        method: "POST",
+        body: values,
+      }),
+    onSuccess: ({ data }) => {
+      toast.success(
+        data.status === "PENDING_PAYMENT"
+          ? "Complaint created. Payment is required to continue."
+          : "Complaint submitted",
+      );
+      router.push(`${LIST}/${data.id}`);
+      router.refresh();
     },
-    placeholderData: keepPreviousData,
+    onError,
+  });
+}
+
+export function useEditComplaint(id: string, onDone: () => void) {
+  const client = useQueryClient();
+  const router = useRouter();
+  return useMutation({
+    mutationFn: (values: EditComplaintValues) =>
+      clientApi(`/complaints/${id}`, { method: "PATCH", body: values }),
+    onSuccess: () => {
+      toast.success("Complaint updated");
+      onDone();
+      client.invalidateQueries({ queryKey: complaintKey(id) });
+      router.refresh();
+    },
+    onError,
+  });
+}
+
+export function useCancelComplaint(id: string) {
+  const client = useQueryClient();
+  const router = useRouter();
+  return useMutation({
+    mutationFn: () =>
+      clientApi(`/complaints/${id}/cancel`, { method: "POST", body: {} }),
+    onSuccess: () => {
+      toast.success("Complaint cancelled");
+      client.invalidateQueries({ queryKey: complaintKey(id) });
+      router.refresh();
+    },
+    onError,
+  });
+}
+
+export function useDeleteComplaint(id: string) {
+  const router = useRouter();
+  return useMutation({
+    mutationFn: () => clientApi(`/complaints/${id}`, { method: "DELETE" }),
+    onSuccess: () => {
+      toast.success("Complaint deleted");
+      router.replace(LIST);
+      router.refresh();
+    },
+    onError,
   });
 }

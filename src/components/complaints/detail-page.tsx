@@ -3,7 +3,7 @@ import { getComplaint } from "@/lib/complaints";
 
 interface DetailPageProps {
   params: Promise<{ id: string }>;
-  mode: "technician" | "view";
+  mode: "technician" | "citizen" | "view";
   backHref: string;
 }
 

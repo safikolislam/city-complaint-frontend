@@ -11,11 +11,13 @@ export const COMPLAINT_STATUSES = [
 ] as const;
 export type ComplaintStatus = (typeof COMPLAINT_STATUSES)[number];
 
-export type ComplaintPriority = "LOW" | "MEDIUM" | "HIGH";
+export type ComplaintPriority = "LOW" | "MEDIUM" | "HIGH" | "URGENT";
+export type ComplaintType = "COMPLAINT" | "SERVICE_REQUEST";
 
 export interface ComplaintItem {
   id: string;
   title: string;
+  type?: ComplaintType;
   status: ComplaintStatus;
   priority: ComplaintPriority;
   address: string;
@@ -36,6 +38,8 @@ export interface ComplaintDetail extends ComplaintItem {
   description: string;
   department: { id: string; name: string };
   citizen: { id?: string; name: string; email: string };
+  latitude?: number | null;
+  longitude?: number | null;
   statusHistory: StatusHistoryItem[];
 }
 
@@ -44,4 +48,10 @@ export interface ComplaintQuery {
   limit?: number;
   status?: string;
   search?: string;
+}
+
+export interface Category {
+  id: string;
+  name: string;
+  serviceFee?: string | number | null;
 }
