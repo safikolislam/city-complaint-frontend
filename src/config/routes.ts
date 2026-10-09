@@ -11,10 +11,11 @@ export const staffHome: Record<StaffPosition, string> = {
   TECHNICIAN: "/dashboard/staff/technician",
 };
 
+
 export function homeFor(user: {
   role: Role;
   staffPosition?: StaffPosition | null;
-}) {
+}): string {
   if (user.role === "STAFF" && user.staffPosition) {
     return staffHome[user.staffPosition];
   }

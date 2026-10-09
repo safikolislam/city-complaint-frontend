@@ -2,21 +2,22 @@ import {
   ComplaintList,
   type ListSearchParams,
 } from "@/components/complaints/complaint-list";
+import { staffHome } from "@/config/routes";
 import { getComplaints } from "@/lib/complaints";
 
-export const metadata = { title: "Officer - Complaints" };
+export const metadata = { title: "Department complaints" };
 
-export default async function Page({
+export default async function OfficerPage({
   searchParams,
 }: {
   searchParams: Promise<ListSearchParams>;
 }) {
   return (
     <ComplaintList
-      title="Complaints"
+      title="Department complaints"
       searchParams={await searchParams}
       fetcher={getComplaints}
-      hrefBase="/dashboard/staff/officer"
+      hrefBase={staffHome.OFFICER}
     />
   );
 }

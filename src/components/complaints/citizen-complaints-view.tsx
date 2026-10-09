@@ -34,11 +34,7 @@ export function CitizenComplaintsView() {
     <div className="space-y-6">
       <ComplaintFilters />
       <AdminComplaintsTable items={data?.items ?? []} />
-      <Pagination
-        page={page}
-        limit={LIMIT}
-        total={data?.meta?.total ?? 0}
-      />
+      <Pagination page={page} limit={LIMIT} total={data?.meta?.total ?? 0} />
     </div>
   );
 }

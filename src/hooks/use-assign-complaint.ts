@@ -2,57 +2,51 @@
 
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { toast } from "sonner";
-import { adminComplaintsKey } from "@/hooks/use-admin-complaints";
+
 import { clientApi } from "@/lib/client-api";
-import type { ComplaintItem } from "@/lib/complaints";
-import type { AssignValues } from "@/lib/validations/assign";
-import type { PagedResult } from "@/types/paged";
 
-type Cached = PagedResult<ComplaintItem> | undefined;
+export interface AssignValues {
+  staffId: string;
+  technicianId: string;
+}
 
-const toBody = (values: AssignValues) => ({
-  ...(values.staffId ? { staffId: values.staffId } : {}),
-  ...(values.technicianId ? { technicianId: values.technicianId } : {}),
-});
-
-export function useAssignComplaint(id: string, onDone: () => void) {
-  const client = useQueryClient();
+export function useAssignComplaint(
+  complaintId: string,
+  onSuccess?: () => void,
+) {
+  const queryClient = useQueryClient();
 
   return useMutation({
-    mutationFn: (values: AssignValues) =>
-      clientApi(`/complaints/${id}/assign`, {
+    mutationFn: async (values: AssignValues) => {
+      return clientApi(`/complaints/${complaintId}/assign`, {
         method: "POST",
-        body: toBody(values),
-      }),
-    onMutate: async () => {
-      await client.cancelQueries({ queryKey: adminComplaintsKey });
-      const snapshots = client.getQueriesData<Cached>({
-        queryKey: adminComplaintsKey,
+        body: values,
       });
-      client.setQueriesData<Cached>({ queryKey: adminComplaintsKey }, (old) =>
-        old
-          ? {
-              ...old,
-              items: old.items.map((item) =>
-                item.id === id
-                  ? { ...item, status: "ASSIGNED" as const }
-                  : item,
-              ),
-            }
-          : old,
-      );
-      return { snapshots };
     },
-    onError: (error, _values, context) => {
-      for (const [key, data] of context?.snapshots ?? []) {
-        client.setQueryData(key, data);
-      }
-      toast.error(error.message);
-    },
+
     onSuccess: () => {
-      toast.success("Complaint assigned");
-      onDone();
+      toast.success("Complaint assigned successfully");
+
+      queryClient.invalidateQueries({
+        queryKey: ["complaints"],
+      });
+
+      queryClient.invalidateQueries({
+        queryKey: ["my-assigned"],
+      });
+
+      queryClient.invalidateQueries({
+        queryKey: ["admin-users"],
+      });
+
+      onSuccess?.();
     },
-    onSettled: () => client.invalidateQueries({ queryKey: adminComplaintsKey }),
+
+    onError: (error: unknown) => {
+      const message =
+        error instanceof Error ? error.message : "Failed to assign complaint";
+
+      toast.error(message);
+    },
   });
 }

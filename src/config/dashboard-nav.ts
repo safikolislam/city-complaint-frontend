@@ -1,7 +1,11 @@
 import {
+  ClipboardList,
+  CreditCard,
+  FilePlus2,
   FileText,
   LayoutDashboard,
   type LucideIcon,
+  ScrollText,
   User,
   Users,
   Wrench,
@@ -21,46 +25,42 @@ const profile: NavItem = {
   icon: User,
 };
 
+const adminNav: NavItem[] = [
+  { label: "Overview", href: "/dashboard/admin", icon: LayoutDashboard },
+  { label: "Complaints", href: "/dashboard/admin/complaints", icon: FileText },
+  { label: "Users", href: "/dashboard/admin/users", icon: Users },
+  {
+    label: "Audit Logs",
+    href: "/dashboard/admin/audit-logs",
+    icon: ScrollText,
+  },
+  profile,
+];
+
+const citizenNav: NavItem[] = [
+  { label: "Overview", href: "/dashboard/citizen", icon: LayoutDashboard },
+  {
+    label: "My Complaints",
+    href: "/dashboard/citizen/complaints",
+    icon: FileText,
+  },
+  { label: "New Complaint", href: "/dashboard/citizen/new", icon: FilePlus2 },
+  { label: "Payments", href: "/dashboard/citizen/payments", icon: CreditCard },
+  profile,
+];
+
+const officerNav: NavItem[] = [
+  { label: "Complaints", href: staffHome.OFFICER, icon: ClipboardList },
+  profile,
+];
+
+const technicianNav: NavItem[] = [
+  { label: "My Tasks", href: staffHome.TECHNICIAN, icon: Wrench },
+  profile,
+];
+
 export function getNav(role: Role, position?: StaffPosition | null): NavItem[] {
-  if (role === "ADMIN") {
-    return [
-      { label: "Overview", href: "/dashboard/admin", icon: LayoutDashboard },
-      {
-        label: "Complaints",
-        href: "/dashboard/admin/complaints",
-        icon: FileText,
-      },
-      { label: "Users", href: "/dashboard/admin/users", icon: Users },
-      profile,
-    ];
-  }
-
-  if (role === "STAFF") {
-    if (position === "TECHNICIAN") {
-      return [
-        { label: "My Tasks", href: staffHome.TECHNICIAN, icon: Wrench },
-        profile,
-      ];
-    }
-    if (position === "OFFICER") {
-      return [
-        { label: "Complaints", href: staffHome.OFFICER, icon: FileText },
-        profile,
-      ];
-    }
-    return [
-      { label: "Overview", href: "/dashboard/staff", icon: LayoutDashboard },
-      profile,
-    ];
-  }
-
-  return [
-    { label: "Overview", href: "/dashboard/citizen", icon: LayoutDashboard },
-    {
-      label: "My Complaints",
-      href: "/dashboard/citizen/complaints",
-      icon: FileText,
-    },
-    profile,
-  ];
+  if (role === "ADMIN") return adminNav;
+  if (role === "CITIZEN") return citizenNav;
+  return position === "TECHNICIAN" ? technicianNav : officerNav;
 }

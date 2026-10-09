@@ -1,7 +1,6 @@
 import type { Metadata } from "next";
 import { Suspense } from "react";
 
-
 import { Pagination } from "@/components/shared/pagination";
 import { getComplaints } from "@/lib/complaints";
 import { ComplaintFilters } from "@/components/complaints/complaint-filter";
@@ -39,7 +38,10 @@ export default async function MyComplaintsPage({ searchParams }: Props) {
         <ComplaintFilters />
       </Suspense>
 
-      <AdminComplaintsTable items={items} filtered={Boolean(status || search)} />
+      <AdminComplaintsTable
+        items={items}
+        filtered={Boolean(status || search)}
+      />
 
       {meta && (
         <Suspense fallback={null}>

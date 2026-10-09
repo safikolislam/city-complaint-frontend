@@ -1,4 +1,3 @@
-"use client";
 
 import { ComplaintFilters } from "./complaint-filter";
 import { AdminComplaintsTable } from "./complaints-table";
@@ -13,7 +12,9 @@ interface ComplaintListProps {
   page?: string;
   status?: string;
   search?: string;
-  fetcher: (query: ComplaintQuery) => Promise<{ items: ComplaintItem[]; meta?: Meta }>;
+  fetcher: (
+    query: ComplaintQuery,
+  ) => Promise<{ items: ComplaintItem[]; meta?: Meta }>;
   hrefBase?: string;
 }
 

@@ -28,7 +28,10 @@ export function UsersView({ currentUserId }: { currentUserId?: string }) {
     body = <TableSkeleton />;
   } else if (users.isError) {
     body = (
-      <ErrorState message={users.error.message} onRetry={() => users.refetch()} />
+      <ErrorState
+        message={users.error.message}
+        onRetry={() => users.refetch()}
+      />
     );
   } else {
     body = (

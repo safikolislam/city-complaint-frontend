@@ -1,29 +1,20 @@
-import type { Metadata } from "next";
-
+import { redirect } from "next/navigation";
+import { Card, CardContent } from "@/components/ui/card";
+import { staffHome } from "@/config/routes";
 import { getProfile } from "@/lib/profile";
-import { AssignedComplaints } from "@/components/staff/assigned-complaints";
 
+export const metadata = { title: "Staff" };
 
-export const metadata: Metadata = {
-  title: "Staff Dashboard",
-};
-
-export default async function StaffDashboardPage() {
-  const profile = await getProfile();
+export default async function StaffIndexPage() {
+  const { staffPosition } = await getProfile();
+  if (staffPosition) redirect(staffHome[staffPosition]);
 
   return (
-    <div className="space-y-6">
-      <div>
-        <h1 className="text-2xl font-bold">
-          Welcome, {profile.name}
-        </h1>
-
-        <p className="text-sm text-muted-foreground">
-          Manage your assigned complaints and update their status.
-        </p>
-      </div>
-
-      <AssignedComplaints />
-    </div>
+    <Card className="max-w-xl">
+      <CardContent className="p-6 text-sm text-muted-foreground">
+        Your staff position has not been set yet. Please ask an admin to make
+        you an officer or a technician.
+      </CardContent>
+    </Card>
   );
 }

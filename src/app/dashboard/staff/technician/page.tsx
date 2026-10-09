@@ -1,22 +1,22 @@
-import {
-  ComplaintList,
-  type ListSearchParams,
-} from "@/components/complaints/complaint-list";
-import { getMyAssigned } from "@/lib/complaints";
+import type { Metadata } from "next";
+import { Suspense } from "react";
+import { TableSkeleton } from "@/components/shared/table-skeleton";
+import { TasksView } from "@/components/staff/tasks-view";
 
-export const metadata = { title: "Technician - My tasks" };
+export const metadata: Metadata = { title: "My tasks" };
 
-export default async function Page({
-  searchParams,
-}: {
-  searchParams: Promise<ListSearchParams>;
-}) {
+export default function TechnicianTasksPage() {
   return (
-    <ComplaintList
-      title="My assigned complaints"
-      searchParams={await searchParams}
-      fetcher={getMyAssigned}
-      hrefBase="/dashboard/staff/technician"
-    />
+    <div className="space-y-6">
+      <div>
+        <h1 className="text-2xl font-bold">My tasks</h1>
+        <p className="text-sm text-muted-foreground">
+          Complaints assigned to you. Start the work, then resolve it.
+        </p>
+      </div>
+      <Suspense fallback={<TableSkeleton />}>
+        <TasksView />
+      </Suspense>
+    </div>
   );
 }

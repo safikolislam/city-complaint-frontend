@@ -1,6 +1,7 @@
 "use server";
 
-import { roleHome } from "@/config/routes";
+
+import { homeFor } from "@/config/routes";
 import { ApiError, api, apiRaw } from "@/lib/api";
 import { REFRESH_COOKIE } from "@/lib/cookie-config";
 import { readRefreshCookie } from "@/lib/refresh";
@@ -35,24 +36,38 @@ function toFailure(error: unknown): ActionResult {
       message: error.errors[0]?.message ?? error.message,
     };
   }
-  return { success: false, message: "Something went wrong. Please try again." };
+
+  return {
+    success: false,
+    message: "Something went wrong. Please try again.",
+  };
 }
 
 export async function loginAction(values: Credentials): Promise<ActionResult> {
   try {
     const { json, headers } = await apiRaw<LoginData>("/auth/login", {
       method: "POST",
-      body: { email: values.email, password: values.password },
+      body: {
+        email: values.email,
+        password: values.password,
+      },
     });
+
     const refreshToken = readRefreshCookie(headers);
+
     if (!refreshToken) {
-      return { success: false, message: "Login failed. Please try again." };
+      return {
+        success: false,
+        message: "Login failed. Please try again.",
+      };
     }
+
     await setSession(json.data.accessToken, refreshToken);
+
     return {
       success: true,
       message: "Login successful",
-      redirectTo: roleHome[json.data.user.role],
+      redirectTo: homeFor(json.data.user),
     };
   } catch (error) {
     return toFailure(error);
@@ -67,14 +82,25 @@ export async function registerAction(
   try {
     await api("/auth/register", {
       method: "POST",
-      body: { name, email, password, ...(phone ? { phone } : {}) },
+      body: {
+        name,
+        email,
+        password,
+        ...(phone ? { phone } : {}),
+      },
     });
   } catch (error) {
     return toFailure(error);
   }
 
-  const login = await loginAction({ email, password });
-  if (login.success) return login;
+  const login = await loginAction({
+    email,
+    password,
+  });
+
+  if (login.success) {
+    return login;
+  }
 
   return {
     success: true,
@@ -85,12 +111,19 @@ export async function registerAction(
 
 export async function logoutAction(): Promise<ActionResult> {
   const refreshToken = await getRefreshToken();
+
   if (refreshToken) {
     await api("/auth/logout", {
       method: "POST",
       cookie: `${REFRESH_COOKIE}=${refreshToken}`,
     }).catch(() => undefined);
   }
+
   await clearSession();
-  return { success: true, message: "Logged out", redirectTo: "/auth/login" };
+
+  return {
+    success: true,
+    message: "Logged out",
+    redirectTo: "/auth/login",
+  };
 }

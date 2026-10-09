@@ -1,22 +1,76 @@
 import type { Metadata } from "next";
+import Link from "next/link";
 import { Suspense } from "react";
-import { TableSkeleton } from "@/components/shared/table-skeleton";
-import { CitizenComplaintsView } from "@/components/complaints/citizen-complaints-view";
+import { Plus } from "lucide-react";
 
-export const metadata: Metadata = { title: "My Complaints | Citizen" };
+import { Pagination } from "@/components/shared/pagination";
+import { getComplaints } from "@/lib/complaints";
+import { ComplaintFilters } from "@/components/complaints/complaint-filter";
+import { AdminComplaintsTable } from "@/components/complaints/complaints-table";
+import { Button } from "@/components/ui/button";
 
-export default function CitizenDashboardPage() {
+export const metadata: Metadata = {
+  title: "My Complaints",
+};
+
+const LIMIT = 10;
+
+interface Props {
+  searchParams: Promise<{
+    page?: string;
+    status?: string;
+    search?: string;
+  }>;
+}
+
+export default async function MyComplaintsPage({ searchParams }: Props) {
+  const { page, status, search } = await searchParams;
+
+  const current = Math.max(Number(page) || 1, 1);
+
+  const { items, meta } = await getComplaints({
+    page: current,
+    limit: LIMIT,
+    status,
+    search,
+  });
+
   return (
     <div className="space-y-6">
-      <div>
-        <h1 className="text-2xl font-bold">My Complaints</h1>
-        <p className="text-sm text-muted-foreground">
-          View and track the live status of your submitted complaints.
-        </p>
+      {/* Header */}
+      <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
+        <div>
+          <h1 className="text-2xl font-bold tracking-tight">My Complaints</h1>
+
+          <p className="text-sm text-muted-foreground">
+            {meta
+              ? `${meta.total} complaints in total`
+              : "View and manage your complaints"}
+          </p>
+        </div>
+
+        <Button>
+          <Link href="/dashboard/citizen/complaints/new">
+            <Plus className="mr-2 size-4" />
+            Submit Complaint
+          </Link>
+        </Button>
       </div>
-      <Suspense fallback={<TableSkeleton />}>
-        <CitizenComplaintsView />
+
+      {/* Filters */}
+      <Suspense fallback={null}>
+        <ComplaintFilters />
       </Suspense>
+
+      {/* Complaints */}
+      <AdminComplaintsTable items={items} />
+
+      {/* Pagination */}
+      {meta && (
+        <Suspense fallback={null}>
+          <Pagination page={current} limit={LIMIT} total={meta.total} />
+        </Suspense>
+      )}
     </div>
   );
 }

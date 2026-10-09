@@ -18,7 +18,9 @@ export function MemberSelect(props: MemberSelectProps) {
   return (
     <FieldShell id={id} label={label} error={error}>
       <select id={id} className={nativeFieldClass} {...field}>
-        <option value="">{loading ? "Loading..." : `No ${name} selected`}</option>
+        <option value="">
+          {loading ? "Loading..." : `No ${name} selected`}
+        </option>
         {members.map((member) => (
           <option key={member.id} value={member.id}>
             {member.name}
