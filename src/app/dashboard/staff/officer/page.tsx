@@ -1,23 +1,22 @@
-import {
-  ComplaintList,
-  type ListSearchParams,
-} from "@/components/complaints/complaint-list";
-import { staffHome } from "@/config/routes";
-import { getComplaints } from "@/lib/complaints";
+import type { Metadata } from "next";
+import { OfficerView } from "@/components/officer/officer-view";
+import { TableSkeleton } from "@/components/shared/table-skeleton";
+import { Suspense } from "react";
 
-export const metadata = { title: "Department complaints" };
+export const metadata: Metadata = { title: "Department complaints" };
 
-export default async function OfficerPage({
-  searchParams,
-}: {
-  searchParams: Promise<ListSearchParams>;
-}) {
+export default function OfficerPage() {
   return (
-    <ComplaintList
-      title="Department complaints"
-      searchParams={await searchParams}
-      fetcher={getComplaints}
-      hrefBase={staffHome.OFFICER}
-    />
+    <div className="space-y-6">
+      <div>
+        <h1 className="text-2xl font-bold">Department complaints</h1>
+        <p className="text-sm text-muted-foreground">
+          Review complaints in your department and assign them to a technician.
+        </p>
+      </div>
+      <Suspense fallback={<TableSkeleton />}>
+        <OfficerView />
+      </Suspense>
+    </div>
   );
 }
