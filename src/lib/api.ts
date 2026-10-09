@@ -89,7 +89,7 @@ export async function apiRaw<T>(
     const message =
       (json && typeof json.message === "string" && json.message) ||
       `Request failed (${res.status})`;
-    console.error(`[api] ${method} ${path} -> ${res.status}`, json);
+ 
     throw new ApiError(message, res.status, normalizeErrors(json?.errors));
   }
 

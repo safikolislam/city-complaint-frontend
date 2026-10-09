@@ -6,8 +6,9 @@ import { Plus } from "lucide-react";
 import { Pagination } from "@/components/shared/pagination";
 import { getComplaints } from "@/lib/complaints";
 import { ComplaintFilters } from "@/components/complaints/complaint-filter";
-import { AdminComplaintsTable } from "@/components/complaints/complaints-table";
+
 import { Button } from "@/components/ui/button";
+import { AdminComplaintsTable } from "@/components/complaints/admin-complaints-table";
 
 export const metadata: Metadata = {
   title: "My Complaints",
@@ -49,12 +50,7 @@ export default async function MyComplaintsPage({ searchParams }: Props) {
           </p>
         </div>
 
-        <Button>
-          <Link href="/dashboard/citizen/complaints/new">
-            <Plus className="mr-2 size-4" />
-            Submit Complaint
-          </Link>
-        </Button>
+ 
       </div>
 
       {/* Filters */}

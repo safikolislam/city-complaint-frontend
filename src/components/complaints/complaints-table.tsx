@@ -1,6 +1,9 @@
 import { Inbox } from "lucide-react";
+import Link from "next/link";
 
 import { StatusBadge } from "@/components/complaints/status-badge";
+import { PayButton } from "@/components/payments/pay-button";
+import { buttonVariants } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import {
   Table,
@@ -12,9 +15,20 @@ import {
 } from "@/components/ui/table";
 import type { ComplaintItem } from "@/lib/complaints";
 import { DueCell } from "./due-cell";
-import { AssignDialog } from "./assign-dialog";
 
-export function AdminComplaintsTable({ items }: { items: ComplaintItem[] }) {
+const stickyAction = "sticky right-0 border-l bg-card text-right";
+
+interface ComplaintsTableProps {
+  items: ComplaintItem[];
+  filtered: boolean;
+  hrefBase?: string;
+}
+
+export function ComplaintsTable({
+  items,
+  filtered,
+  hrefBase,
+}: ComplaintsTableProps) {
   if (items.length === 0) {
     return (
       <Card>
@@ -22,7 +36,9 @@ export function AdminComplaintsTable({ items }: { items: ComplaintItem[] }) {
           <Inbox className="size-10 text-muted-foreground" />
           <p className="font-medium">No complaints found</p>
           <p className="text-sm text-muted-foreground">
-            Try changing your search or filter.
+            {filtered
+              ? "Try changing your search or filter."
+              : "Complaints you submit will appear here."}
           </p>
         </CardContent>
       </Card>
@@ -40,7 +56,7 @@ export function AdminComplaintsTable({ items }: { items: ComplaintItem[] }) {
               <TableHead>Priority</TableHead>
               <TableHead>Status</TableHead>
               <TableHead>Due</TableHead>
-              <TableHead className="text-right">Action</TableHead>
+              <TableHead className={stickyAction}>Action</TableHead>
             </TableRow>
           </TableHeader>
           <TableBody>
@@ -62,8 +78,23 @@ export function AdminComplaintsTable({ items }: { items: ComplaintItem[] }) {
                 <TableCell>
                   <DueCell item={item} />
                 </TableCell>
-                <TableCell className="text-right">
-                  <AssignDialog complaint={item} />
+                <TableCell className={stickyAction}>
+                  <div className="flex items-center justify-end gap-2">
+                    {item.status === "PENDING_PAYMENT" ? (
+                      <PayButton complaintId={item.id} size="sm" />
+                    ) : null}
+                    {hrefBase ? (
+                      <Link
+                        href={`${hrefBase}/${item.id}`}
+                        className={buttonVariants({
+                          variant: "outline",
+                          size: "sm",
+                        })}
+                      >
+                        Details
+                      </Link>
+                    ) : null}
+                  </div>
                 </TableCell>
               </TableRow>
             ))}

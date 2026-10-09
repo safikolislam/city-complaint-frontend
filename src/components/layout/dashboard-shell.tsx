@@ -30,22 +30,29 @@ export function DashboardShell({ role, position, userName, children }: Props) {
 
   return (
     <div className="min-h-screen md:grid md:grid-cols-[240px_1fr]">
-      <aside className="hidden border-r bg-card md:block">
+      {/* Desktop Sidebar */}
+      <aside className="hidden border-r bg-card md:flex md:flex-col md:h-screen md:sticky md:top-0">
         <Link href="/" className="block p-4 text-lg font-bold">
           {siteConfig.name}
         </Link>
-        <DashboardSidebar items={items} />
+        <div className="flex-1 overflow-y-auto">
+          <DashboardSidebar items={items} />
+        </div>
       </aside>
 
+      {/* Mobile Drawer */}
       <Sheet open={open} onOpenChange={setOpen}>
-        <SheetContent side="left" className="w-64 p-0">
-          <SheetHeader className="p-4">
+        <SheetContent side="left" className="flex w-64 flex-col p-0">
+          <SheetHeader className="p-4 border-b">
             <SheetTitle>{siteConfig.name}</SheetTitle>
           </SheetHeader>
-          <DashboardSidebar items={items} onNavigate={() => setOpen(false)} />
+          <div className="flex-1 overflow-y-auto">
+            <DashboardSidebar items={items} onNavigate={() => setOpen(false)} />
+          </div>
         </SheetContent>
       </Sheet>
 
+      {/* Main Content */}
       <div className="flex min-w-0 flex-col">
         <header className="flex h-14 items-center gap-3 border-b px-4">
           <Button
