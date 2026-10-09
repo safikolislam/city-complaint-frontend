@@ -1,38 +1,28 @@
 "use client";
 
-import { useEffect, useState } from "react";
-import { Loader2, UserPlus } from "lucide-react";
-import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { toast } from "sonner";
-
+import { Loader2, UserPlus } from "lucide-react";
+import { usePathname } from "next/navigation";
+import { useState } from "react";
+import { useForm } from "react-hook-form";
+import { FieldShell, nativeFieldClass } from "@/components/shared/field-shell";
+import { Modal } from "@/components/shared/modal";
+import { Button } from "@/components/ui/button";
 import { useAssignComplaint } from "@/hooks/use-assign-complaint";
-import { clientApi } from "@/lib/client-api";
-import { assignSchema, AssignValues } from "@/lib/validations/assign";
+import { useDepartmentOfficers } from "@/hooks/use-department-officers";
+import { type AssignValues, assignSchema } from "@/lib/validations/assign";
 import type { ComplaintItem } from "@/types/complaint";
 
-import { Button } from "../ui/button";
-import { Modal } from "../shared/modal";
-
-interface StaffMember {
-  id: string;
-  name: string;
-  email: string;
-  role: string;
-  staffPosition?: "OFFICER" | "TECHNICIAN" | null;
-  department?: {
-    id: string;
-    name: string;
-  } | null;
-}
+const ALLOWED_AREAS = ["/dashboard/admin", "/dashboard/staff/officer"];
 
 export function AssignDialog({ complaint }: { complaint: ComplaintItem }) {
+  const pathname = usePathname();
   const [open, setOpen] = useState(false);
-  const [staff, setStaff] = useState<StaffMember[]>([]);
-  const [loadingStaff, setLoadingStaff] = useState(false);
-
+  const { officers, isLoading, error } = useDepartmentOfficers(
+    complaint.department?.id,
+    open,
+  );
   const mutation = useAssignComplaint(complaint.id, () => setOpen(false));
-
   const {
     register,
     handleSubmit,
@@ -40,65 +30,16 @@ export function AssignDialog({ complaint }: { complaint: ComplaintItem }) {
     formState: { errors },
   } = useForm<AssignValues>({
     resolver: zodResolver(assignSchema),
-    defaultValues: {
-      staffId: "",
-      technicianId: "",
-    },
+    defaultValues: { staffId: "" },
   });
 
-  useEffect(() => {
-    if (!open) return;
-
-    const loadStaff = async () => {
-      try {
-        setLoadingStaff(true);
-
-        const response = await clientApi<StaffMember[]>(
-          "/admin/users?role=STAFF&limit=100",
-        );
-
-        const raw = response?.data;
-
-        const users = Array.isArray(raw)
-          ? raw
-          : ((raw as any)?.items ?? (raw as any)?.data ?? []);
-
-        setStaff(users);
-      } catch (error) {
-        console.error(error);
-        toast.error("Failed to load staff members");
-      } finally {
-        setLoadingStaff(false);
-      }
-    };
-
-    loadStaff();
-  }, [open]);
-
-  const departmentId = complaint.department?.id;
-
-  const departmentStaff = staff.filter(
-    (member) => member.department?.id === departmentId,
-  );
-
-  const officers = departmentStaff.filter(
-    (member) => member.staffPosition === "OFFICER",
-  );
-
-  const technicians = departmentStaff.filter(
-    (member) => member.staffPosition === "TECHNICIAN",
-  );
+  if (!ALLOWED_AREAS.some((area) => pathname.startsWith(area))) return null;
 
   const canAssign =
     complaint.status === "PENDING" || complaint.status === "REOPENED";
 
-  const submitHandler = (values: AssignValues) => {
-    mutation.mutate(values);
-  };
-
   const closeModal = () => {
     if (mutation.isPending) return;
-
     setOpen(false);
     reset();
   };
@@ -115,98 +56,48 @@ export function AssignDialog({ complaint }: { complaint: ComplaintItem }) {
         Assign
       </Button>
 
-      <Modal open={open} onClose={closeModal} title="Assign Complaint">
-        <div className="mb-5 rounded-lg bg-muted/50 p-4">
+      <Modal open={open} onClose={closeModal} title="Assign to officer">
+        <div className="mb-4 rounded-lg bg-muted/50 p-4">
           <p className="font-semibold">{complaint.title}</p>
-
           <p className="mt-1 text-sm text-muted-foreground">
             Department: {complaint.department?.name ?? "Not assigned"}
           </p>
         </div>
 
-        {loadingStaff ? (
-          <div className="flex items-center justify-center py-10">
+        {isLoading ? (
+          <div className="flex items-center justify-center py-8">
             <Loader2 className="size-6 animate-spin" />
-
-            <span className="ml-2 text-sm text-muted-foreground">
-              Loading staff...
-            </span>
           </div>
+        ) : error ? (
+          <p className="py-6 text-center text-sm text-destructive">
+            {error.message}
+          </p>
         ) : (
           <form
-            onSubmit={handleSubmit(submitHandler)}
-            className="space-y-5"
+            onSubmit={handleSubmit((values) => mutation.mutate(values))}
+            className="space-y-4"
             noValidate
           >
-            {/* Officer */}
-            <div className="space-y-2">
-              <label htmlFor="staffId" className="text-sm font-medium">
-                Officer
-              </label>
-
+            <FieldShell id="staffId" label="Officer" error={errors.staffId?.message}>
               <select
                 id="staffId"
-                {...register("staffId")}
-                className="h-10 w-full rounded-md border bg-background px-3 text-sm outline-none focus:ring-2 focus:ring-ring"
+                className={nativeFieldClass}
                 disabled={mutation.isPending}
+                {...register("staffId")}
               >
-                <option value="">Select Officer</option>
-
-                {officers.map((officer) => (
-                  <option key={officer.id} value={officer.id}>
-                    {officer.name} ({officer.email})
+                <option value="">Select officer</option>
+                {officers.map((o) => (
+                  <option key={o.id} value={o.id}>
+                    {o.name} ({o.email})
                   </option>
                 ))}
               </select>
-
-              {errors.staffId?.message && (
-                <p className="text-sm text-destructive">
-                  {errors.staffId.message}
-                </p>
-              )}
-
-              {officers.length === 0 && (
+              {officers.length === 0 ? (
                 <p className="text-xs text-muted-foreground">
                   No officer found for this department.
                 </p>
-              )}
-            </div>
-
-            {/* Technician */}
-            <div className="space-y-2">
-              <label htmlFor="technicianId" className="text-sm font-medium">
-                Technician
-              </label>
-
-              <select
-                id="technicianId"
-                {...register("technicianId")}
-                className="h-10 w-full rounded-md border bg-background px-3 text-sm outline-none focus:ring-2 focus:ring-ring"
-                disabled={mutation.isPending}
-              >
-                <option value="">Select Technician</option>
-
-                {technicians.map((technician) => (
-                  <option key={technician.id} value={technician.id}>
-                    {technician.name} ({technician.email})
-                  </option>
-                ))}
-              </select>
-
-              {errors.technicianId?.message && (
-                <p className="text-sm text-destructive">
-                  {errors.technicianId.message}
-                </p>
-              )}
-
-              {technicians.length === 0 && (
-                <p className="text-xs text-muted-foreground">
-                  No technician found for this department.
-                </p>
-              )}
-            </div>
-
-            {/* Buttons */}
+              ) : null}
+            </FieldShell>
             <div className="flex justify-end gap-3 border-t pt-4">
               <Button
                 type="button"
@@ -216,16 +107,8 @@ export function AssignDialog({ complaint }: { complaint: ComplaintItem }) {
               >
                 Cancel
               </Button>
-
               <Button type="submit" disabled={mutation.isPending}>
-                {mutation.isPending ? (
-                  <>
-                    <Loader2 className="mr-2 size-4 animate-spin" />
-                    Assigning...
-                  </>
-                ) : (
-                  "Assign Complaint"
-                )}
+                {mutation.isPending ? "Assigning..." : "Assign"}
               </Button>
             </div>
           </form>

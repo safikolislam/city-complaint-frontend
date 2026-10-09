@@ -4,6 +4,7 @@ import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { useRouter } from "next/navigation";
 import { toast } from "sonner";
 import { complaintKey } from "@/hooks/use-compliant-mutations";
+import { successAlert } from "@/lib/alert";
 import { clientApi } from "@/lib/client-api";
 import type {
   CreateComplaintValues,
@@ -23,10 +24,11 @@ export function useCreateComplaint() {
         body: values,
       }),
     onSuccess: ({ data }) => {
-      toast.success(
+      successAlert(
+        "Complaint submitted",
         data.status === "PENDING_PAYMENT"
-          ? "Complaint created. Payment is required to continue."
-          : "Complaint submitted",
+          ? "Payment is required to continue."
+          : undefined,
       );
       router.push(`${LIST}/${data.id}`);
       router.refresh();
@@ -42,7 +44,7 @@ export function useEditComplaint(id: string, onDone: () => void) {
     mutationFn: (values: EditComplaintValues) =>
       clientApi(`/complaints/${id}`, { method: "PATCH", body: values }),
     onSuccess: () => {
-      toast.success("Complaint updated");
+      successAlert("Complaint updated");
       onDone();
       client.invalidateQueries({ queryKey: complaintKey(id) });
       router.refresh();
@@ -58,7 +60,7 @@ export function useCancelComplaint(id: string) {
     mutationFn: () =>
       clientApi(`/complaints/${id}/cancel`, { method: "POST", body: {} }),
     onSuccess: () => {
-      toast.success("Complaint cancelled");
+      successAlert("Complaint cancelled");
       client.invalidateQueries({ queryKey: complaintKey(id) });
       router.refresh();
     },
@@ -71,7 +73,7 @@ export function useDeleteComplaint(id: string) {
   return useMutation({
     mutationFn: () => clientApi(`/complaints/${id}`, { method: "DELETE" }),
     onSuccess: () => {
-      toast.success("Complaint deleted");
+      successAlert("Complaint deleted");
       router.replace(LIST);
       router.refresh();
     },

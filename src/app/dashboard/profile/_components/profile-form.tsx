@@ -6,6 +6,7 @@ import { useForm } from "react-hook-form";
 import { toast } from "sonner";
 import { FormField } from "@/components/shared/form-field";
 import { Button } from "@/components/ui/button";
+import { successAlert } from "@/lib/alert";
 import type { Profile } from "@/lib/profile";
 import { type ProfileValues, profileSchema } from "@/lib/validations/profile";
 import { updateProfileAction } from "../../_actions/profileAction";
@@ -39,52 +40,39 @@ export function ProfileForm({ profile }: { profile: Profile }) {
       toast.error(result.message);
       return;
     }
-    toast.success(result.message);
+    successAlert("Profile updated");
     reset(values);
     router.refresh();
   };
 
   return (
-    <form
-      onSubmit={handleSubmit(onSubmit)}
-      className="p-6 md:p-8 space-y-6"
-      noValidate
-    >
-      <div className="space-y-4">
-        <FormField
-          id="name"
-          label="Full name"
-          autoComplete="name"
-          error={errors.name?.message}
-          {...register("name")}
-        />
-        <FormField
-          id="email"
-          label="Email"
-          type="email"
-          autoComplete="email"
-          error={errors.email?.message}
-          {...register("email")}
-        />
-        <FormField
-          id="phone"
-          label="Phone"
-          type="tel"
-          placeholder="01XXXXXXXXX"
-          error={errors.phone?.message}
-          {...register("phone")}
-        />
-      </div>
-
-      <div className="pt-2 flex justify-start">
-        <Button
-          type="submit"
-          disabled={!isDirty || isSubmitting}
-          className="px-6"
-        >
-          {isSubmitting ? "Saving..." : "Save changes"}
-        </Button>
-      </div>
+    <form onSubmit={handleSubmit(onSubmit)} className="space-y-4" noValidate>
+      <FormField
+        id="name"
+        label="Full name"
+        autoComplete="name"
+        error={errors.name?.message}
+        {...register("name")}
+      />
+      <FormField
+        id="email"
+        label="Email"
+        type="email"
+        autoComplete="email"
+        error={errors.email?.message}
+        {...register("email")}
+      />
+      <FormField
+        id="phone"
+        label="Phone"
+        type="tel"
+        placeholder="01XXXXXXXXX"
+        error={errors.phone?.message}
+        {...register("phone")}
+      />
+      <Button type="submit" disabled={!isDirty || isSubmitting}>
+        {isSubmitting ? "Saving..." : "Save changes"}
+      </Button>
     </form>
   );
 }

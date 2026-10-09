@@ -9,6 +9,7 @@ import {
   useDeleteComplaint,
 } from "@/hooks/use-citizen-complaints";
 import { useChangeStatus } from "@/hooks/use-compliant-mutations";
+import { confirmAlert, promptAlert } from "@/lib/alert";
 import type { ComplaintDetail } from "@/types/complaint";
 
 const EDITABLE: string[] = ["PENDING_PAYMENT", "PENDING"];
@@ -27,10 +28,31 @@ export function CitizenActions({ complaint }: { complaint: ComplaintDetail }) {
 
   if (!editable && !cancellable && !resolved) return null;
 
-  const reopen = () => {
-    const note = window.prompt("Why do you want to reopen this complaint?");
+  const askCancel = async () => {
+    const ok = await confirmAlert({
+      title: "Cancel this complaint?",
+      text: "This cannot be undone.",
+      confirmText: "Yes, cancel it",
+    });
+    if (ok) cancel.mutate();
+  };
+
+  const askDelete = async () => {
+    const ok = await confirmAlert({
+      title: "Delete this complaint?",
+      text: "You will not be able to recover it.",
+      confirmText: "Yes, delete it",
+    });
+    if (ok) remove.mutate();
+  };
+
+  const askReopen = async () => {
+    const note = await promptAlert({
+      title: "Reopen complaint",
+      placeholder: "Why do you want to reopen it?",
+    });
     if (note === null) return;
-    change.mutate({ status: "REOPENED", note: note.trim() || undefined });
+    change.mutate({ status: "REOPENED", note: note || undefined });
   };
 
   return (
@@ -48,20 +70,12 @@ export function CitizenActions({ complaint }: { complaint: ComplaintDetail }) {
             </Button>
           ) : null}
           {cancellable ? (
-            <Button
-              variant="outline"
-              disabled={busy}
-              onClick={() => window.confirm("Cancel this complaint?") && cancel.mutate()}
-            >
+            <Button variant="outline" disabled={busy} onClick={askCancel}>
               Cancel complaint
             </Button>
           ) : null}
           {editable ? (
-            <Button
-              variant="destructive"
-              disabled={busy}
-              onClick={() => window.confirm("Delete this complaint?") && remove.mutate()}
-            >
+            <Button variant="destructive" disabled={busy} onClick={askDelete}>
               Delete
             </Button>
           ) : null}
@@ -70,7 +84,7 @@ export function CitizenActions({ complaint }: { complaint: ComplaintDetail }) {
               <Button disabled={busy} onClick={() => change.mutate({ status: "CLOSED" })}>
                 Confirm and close
               </Button>
-              <Button variant="outline" disabled={busy} onClick={reopen}>
+              <Button variant="outline" disabled={busy} onClick={askReopen}>
                 Reopen
               </Button>
             </>

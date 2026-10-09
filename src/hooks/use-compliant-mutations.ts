@@ -1,10 +1,11 @@
 "use client";
 
-import { clientApi } from "@/lib/client-api";
-import { ComplaintDetail, ComplaintStatus } from "@/types/complaint";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { useRouter } from "next/navigation";
 import { toast } from "sonner";
+import { successAlert } from "@/lib/alert";
+import { clientApi } from "@/lib/client-api";
+import type { ComplaintDetail, ComplaintStatus } from "@/types/complaint";
 
 export const complaintKey = (id: string) => ["complaint", id] as const;
 
@@ -37,7 +38,7 @@ export function useChangeStatus(id: string) {
       }
       toast.error(error.message);
     },
-    onSuccess: () => toast.success("Status updated"),
+    onSuccess: () => successAlert("Status updated"),
     onSettled: () => {
       client.invalidateQueries({ queryKey: complaintKey(id) });
       router.refresh();
