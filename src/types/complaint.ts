@@ -50,11 +50,11 @@ export interface ComplaintQuery {
   search?: string;
 }
 
-export interface Category {
+export type Category = {
   id: string;
   name: string;
   serviceFee?: string | number | null;
-}
+};
 
 export interface StatusHistoryItem {
   id: string;

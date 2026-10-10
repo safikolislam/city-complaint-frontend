@@ -1,9 +1,8 @@
 import type { Metadata } from "next";
-
+import { ComplaintFilters } from "@/components/complaints/complaint-filter";
 import { ComplaintsTable } from "@/components/complaints/complaints-table";
 import { Pagination } from "@/components/shared/pagination";
 import { getComplaints } from "@/lib/complaints";
-import { ComplaintFilters } from "@/components/complaints/complaint-filter";
 
 export const metadata: Metadata = { title: "My complaints" };
 

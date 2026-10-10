@@ -1,8 +1,8 @@
-import { ListFilters } from "@/components/shared/list-filters";
-import { getAuditLogs } from "@/lib/admin";
 import type { Metadata } from "next";
-import { AuditTable } from "../audit-table";
+import { ListFilters } from "@/components/shared/list-filters";
 import { Pagination } from "@/components/shared/pagination";
+import { getAuditLogs } from "@/lib/admin";
+import { AuditTable } from "../audit-table";
 
 export const metadata: Metadata = { title: "Audit logs" };
 

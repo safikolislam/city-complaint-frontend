@@ -6,10 +6,9 @@ import { Pagination } from "@/components/shared/pagination";
 import { TableSkeleton } from "@/components/shared/table-skeleton";
 import { useAdminComplaints } from "@/hooks/use-admin-complaints";
 import { useUrlParams } from "@/hooks/use-url-params";
-
+import { PRIORITIES } from "@/lib/validations/complaint";
 import { AdminComplaintsTable } from "./admin-complaints-table";
 import { ComplaintFilters } from "./complaint-filter";
-import { PRIORITIES } from "@/lib/validations/complaint";
 
 const LIMIT = 10;
 

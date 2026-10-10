@@ -1,9 +1,8 @@
-import { ComplaintFilters } from "./complaint-filter";
-
 import { Pagination } from "@/components/shared/pagination";
 import type { Meta } from "@/types/api";
 import type { ComplaintItem, ComplaintQuery } from "@/types/complaint";
 import { AdminComplaintsTable } from "./admin-complaints-table";
+import { ComplaintFilters } from "./complaint-filter";
 
 const LIMIT = 10;
 

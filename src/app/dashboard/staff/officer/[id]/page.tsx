@@ -1,9 +1,8 @@
 import { ComplaintOverview } from "@/components/complaints/complaint-overview";
 import { OfficerAssignDialog } from "@/components/officer/officer-assign-dialogue";
-
 import { BackLink } from "@/components/shared/back-link";
 import { staffHome } from "@/config/routes";
-import { getComplaint } from "@/lib/complaint-detail";
+import { getComplaint } from "@/lib/complaints";
 
 export const metadata = { title: "Complaint details" };
 

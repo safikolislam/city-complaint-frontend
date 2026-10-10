@@ -7,8 +7,8 @@ import { TableSkeleton } from "@/components/shared/table-skeleton";
 import { staffHome } from "@/config/routes";
 import { useMyTasks } from "@/hooks/use-my-tasks";
 import { useUrlParams } from "@/hooks/use-url-params";
-import { TasksTable } from "./task-table";
 import { ComplaintFilters } from "../complaints/complaint-filter";
+import { TasksTable } from "./task-table";
 
 const LIMIT = 10;
 

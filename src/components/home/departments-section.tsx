@@ -1,5 +1,5 @@
-import { Construction, Droplets, Trash2 } from "lucide-react";
 import type { LucideIcon } from "lucide-react";
+import { Construction, Droplets, Trash2 } from "lucide-react";
 import Link from "next/link";
 import { SectionHeading } from "@/components/home/section-heading";
 import { buttonVariants } from "@/components/ui/button";

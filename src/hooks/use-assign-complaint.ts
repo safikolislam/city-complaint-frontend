@@ -1,52 +1,25 @@
 "use client";
 
 import { useMutation, useQueryClient } from "@tanstack/react-query";
+import { useRouter } from "next/navigation";
 import { toast } from "sonner";
-
+import { complaintKey } from "@/hooks/use-compliant-mutations";
 import { clientApi } from "@/lib/client-api";
+import type { AssignValues } from "@/lib/validations/assign";
 
-export interface AssignValues {
-  staffId: string;
-  technicianId: string;
-}
-
-export function useAssignComplaint(
-  complaintId: string,
-  onSuccess?: () => void,
-) {
-  const queryClient = useQueryClient();
+export function useAssignComplaint(id: string, onDone: () => void) {
+  const client = useQueryClient();
+  const router = useRouter();
 
   return useMutation({
-    mutationFn: async (values: AssignValues) => {
-      return clientApi(`/complaints/${complaintId}/assign`, {
-        method: "POST",
-        body: values,
-      });
-    },
-
+    mutationFn: (values: AssignValues) =>
+      clientApi(`/complaints/${id}/assign`, { method: "POST", body: values }),
     onSuccess: () => {
-      toast.success("Complaint assigned successfully");
-
-      queryClient.invalidateQueries({
-        queryKey: ["complaints"],
-      });
-
-      queryClient.invalidateQueries({
-        queryKey: ["my-assigned"],
-      });
-
-      queryClient.invalidateQueries({
-        queryKey: ["admin-users"],
-      });
-
-      onSuccess?.();
+      toast.success("Complaint assigned");
+      onDone();
+      client.invalidateQueries({ queryKey: complaintKey(id) });
+      router.refresh();
     },
-
-    onError: (error: unknown) => {
-      const message =
-        error instanceof Error ? error.message : "Failed to assign complaint";
-
-      toast.error(message);
-    },
+    onError: (error) => toast.error(error.message),
   });
 }

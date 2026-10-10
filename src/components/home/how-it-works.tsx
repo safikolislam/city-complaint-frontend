@@ -1,9 +1,9 @@
 import {
+  ArrowRight,
   CheckCircle2,
   ClipboardList,
   Send,
   Wrench,
-  ArrowRight,
 } from "lucide-react";
 
 const steps = [

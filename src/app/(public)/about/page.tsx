@@ -1,8 +1,7 @@
 import { Eye, Gauge, ShieldCheck } from "lucide-react";
 import type { Metadata } from "next";
-
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { PageHeader } from "@/components/publlic/page-header";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 
 const description =
   "CityFix connects citizens with city departments so problems get fixed faster.";

@@ -1,10 +1,9 @@
 "use client";
 
 import { useQuery } from "@tanstack/react-query";
-
 import { clientApi } from "@/lib/client-api";
-import type { ComplaintItem } from "@/lib/complaints";
 import { paymentStateOf } from "@/lib/payment-state";
+import type { ComplaintItem } from "@/types/complaint";
 import type { PaymentRow } from "@/types/payments";
 import { useCategoryFees } from "./use-category-fee";
 
@@ -19,11 +18,14 @@ export function usePaymentRows() {
     staleTime: 0,
   });
 
-  const rows: PaymentRow[] = (requests.data ?? []).map((item) => ({
-    item,
-    fee: fees.data?.[item.category.id] ?? 0,
-    state: paymentStateOf(item.status),
-  }));
+  const rows: PaymentRow[] = (requests.data ?? []).map((item) => {
+    const categoryId = item.category.id;
+    return {
+      item,
+      fee: categoryId ? (fees.data?.[categoryId] ?? 0) : 0,
+      state: paymentStateOf(item.status),
+    };
+  });
 
   return { rows, requests };
 }

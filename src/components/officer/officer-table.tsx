@@ -14,8 +14,8 @@ import {
   TableRow,
 } from "@/components/ui/table";
 import type { ComplaintItem } from "@/lib/complaints";
-import { OfficerAssignDialog } from "./officer-assign-dialogue";
 import { DueCell } from "../complaints/due-cell";
+import { OfficerAssignDialog } from "./officer-assign-dialogue";
 
 const stickyAction = "sticky right-0 border-l bg-card text-right";
 

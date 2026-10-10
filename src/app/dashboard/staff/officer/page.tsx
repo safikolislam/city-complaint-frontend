@@ -1,7 +1,7 @@
 import type { Metadata } from "next";
+import { Suspense } from "react";
 import { OfficerView } from "@/components/officer/officer-view";
 import { TableSkeleton } from "@/components/shared/table-skeleton";
-import { Suspense } from "react";
 
 export const metadata: Metadata = { title: "Department complaints" };
 

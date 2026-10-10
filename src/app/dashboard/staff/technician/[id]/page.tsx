@@ -3,7 +3,7 @@ import { BackLink } from "@/components/shared/back-link";
 import { WorkActions } from "@/components/staff/work-actions";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { staffHome } from "@/config/routes";
-import { getComplaint } from "@/lib/complaint-detail";
+import { getComplaint } from "@/lib/complaints";
 
 export const metadata = { title: "Task details" };
 

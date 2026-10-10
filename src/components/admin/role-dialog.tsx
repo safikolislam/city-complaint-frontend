@@ -9,10 +9,9 @@ import { toast } from "sonner";
 
 import { Modal } from "@/components/shared/modal";
 import { Button } from "@/components/ui/button";
-
+import { clientApi } from "@/lib/client-api";
 import { type RoleValues, roleSchema } from "@/lib/validations/role";
 import type { AdminUser, Department } from "@/types/admin";
-import { clientApi } from "@/lib/client-api";
 import { FieldShell, nativeFieldClass } from "../shared/field-shell";
 
 export function RoleDialog({

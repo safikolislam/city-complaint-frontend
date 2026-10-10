@@ -4,14 +4,13 @@ import { useState } from "react";
 import { EditComplaintDialog } from "@/components/complaints/edit-complaint-dialog";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
-
-import { useChangeStatus } from "@/hooks/use-compliant-mutations";
-import { confirmAlert, promptAlert } from "@/lib/alert";
-import type { ComplaintDetail } from "@/types/complaint";
 import {
   useCancelComplaint,
   useDeleteComplaint,
 } from "@/hooks/use-complaint-action";
+import { useChangeStatus } from "@/hooks/use-compliant-mutations";
+import { confirmAlert, promptAlert } from "@/lib/alert";
+import type { ComplaintDetail } from "@/types/complaint";
 
 const EDITABLE: string[] = ["PENDING_PAYMENT", "PENDING"];
 const CANCELLABLE: string[] = ["PENDING_PAYMENT", "PENDING", "ASSIGNED"];

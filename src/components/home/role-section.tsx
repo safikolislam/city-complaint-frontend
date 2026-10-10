@@ -1,5 +1,5 @@
-import { Check, ShieldCheck, UserRound, Wrench } from "lucide-react";
 import type { LucideIcon } from "lucide-react";
+import { Check, ShieldCheck, UserRound, Wrench } from "lucide-react";
 import { SectionHeading } from "@/components/home/section-heading";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 

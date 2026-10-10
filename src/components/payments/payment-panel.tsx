@@ -3,9 +3,8 @@
 import { Wallet } from "lucide-react";
 import { PayButton } from "@/components/payments/pay-button";
 import { Card, CardContent } from "@/components/ui/card";
-
-import type { ComplaintStatus } from "@/lib/complaints";
 import { useCategoryFees } from "@/hooks/use-category-fee";
+import type { ComplaintStatus } from "@/types/complaint";
 
 interface PaymentPanelProps {
   complaintId: string;
@@ -15,7 +14,8 @@ interface PaymentPanelProps {
 
 export function PaymentPanel(props: PaymentPanelProps) {
   const { complaintId, categoryId, status } = props;
-  const fee = useCategoryFees(categoryId);
+  const fees = useCategoryFees();
+  const fee = fees.data?.[categoryId];
 
   if (status !== "PENDING_PAYMENT") return null;
 
@@ -27,8 +27,8 @@ export function PaymentPanel(props: PaymentPanelProps) {
           <div>
             <p className="font-medium">Payment required</p>
             <p className="text-sm text-muted-foreground">
-              {fee.data
-                ? `Pay the service fee of ৳${fee.data} to send this request to the department.`
+              {fee
+                ? `Pay the service fee of ৳${fee} to send this request to the department.`
                 : "Pay the service fee to send this request to the department."}
             </p>
           </div>

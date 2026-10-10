@@ -1,12 +1,12 @@
 export type Role = "CITIZEN" | "STAFF" | "ADMIN";
 export type StaffPosition = "OFFICER" | "TECHNICIAN";
 
-export interface Meta {
+export type Meta = {
   page: number;
   limit: number;
   total: number;
   totalPage: number;
-}
+};
 
 export interface ApiSuccess<T> {
   success: true;

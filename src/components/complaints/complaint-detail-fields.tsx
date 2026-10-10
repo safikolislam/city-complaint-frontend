@@ -2,9 +2,8 @@ import type { FieldErrors, UseFormRegister } from "react-hook-form";
 import { FieldShell, nativeFieldClass } from "@/components/shared/field-shell";
 import { FormField } from "@/components/shared/form-field";
 import { SelectField } from "@/components/shared/select-field";
-import { CreateComplaintValues } from "@/lib/validations/create-complaint";
 import { PRIORITIES } from "@/lib/validations/complaint";
-
+import type { CreateComplaintValues } from "@/lib/validations/create-complaint";
 
 interface DetailFieldsProps {
   register: UseFormRegister<CreateComplaintValues>;

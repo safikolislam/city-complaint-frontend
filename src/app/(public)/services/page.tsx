@@ -1,10 +1,9 @@
 import type { Metadata } from "next";
 import Link from "next/link";
-
+import { PageHeader } from "@/components/publlic/page-header";
 import { buttonVariants } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { SERVICES } from "@/config/services";
-import { PageHeader } from "@/components/publlic/page-header";
 
 const description =
   "Report problems in water, electricity, roads, waste, lighting and public health.";

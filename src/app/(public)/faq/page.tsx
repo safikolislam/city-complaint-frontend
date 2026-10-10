@@ -1,7 +1,7 @@
-import { PageHeader } from "@/components/publlic/page-header";
-import { FAQS } from "@/config/faq";
 import { ChevronDown } from "lucide-react";
 import type { Metadata } from "next";
+import { PageHeader } from "@/components/publlic/page-header";
+import { FAQS } from "@/config/faq";
 
 const description =
   "Answers to common questions about reporting, tracking and paying.";

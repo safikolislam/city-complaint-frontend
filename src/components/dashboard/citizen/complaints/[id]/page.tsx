@@ -2,7 +2,7 @@ import type { Metadata } from "next";
 import { ComplaintOverview } from "@/components/complaints/complaint-overview";
 import { PaymentPanel } from "@/components/payments/payment-panel";
 import { BackLink } from "@/components/shared/back-link";
-import { getComplaint } from "@/lib/complaint-detail";
+import { getComplaint } from "@/lib/complaints";
 
 export const metadata: Metadata = { title: "Complaint details" };
 
@@ -23,7 +23,7 @@ export default async function CitizenComplaintPage({
       <h1 className="text-2xl font-bold">{c.title}</h1>
       <PaymentPanel
         complaintId={c.id}
-        categoryId={c.category.id}
+        categoryId={c.category.id ?? ""}
         status={c.status}
       />
       <ComplaintOverview complaint={c} />

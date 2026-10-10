@@ -1,9 +1,8 @@
 import { Clock, Mail, MapPin, Phone } from "lucide-react";
 import type { Metadata } from "next";
-
+import { PageHeader } from "@/components/publlic/page-header";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { contactInfo } from "@/config/contact";
-import { PageHeader } from "@/components/publlic/page-header";
 
 const description =
   "Questions or feedback? Get in touch with the CityFix team.";

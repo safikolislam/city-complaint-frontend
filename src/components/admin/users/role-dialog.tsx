@@ -36,7 +36,7 @@ export function RoleDialog({ user, disabled }: RoleDialogProps) {
     },
   });
   const isStaff = watch("role") === "STAFF";
-  const departments = useDepartments(open && isStaff);
+  const departments = useDepartments();
   const mutation = useUpdateRole(user.id, () => setOpen(false));
 
   return (

@@ -1,6 +1,6 @@
 "use client";
 
-import { Shield, User, UserCog, Wrench, type LucideIcon } from "lucide-react";
+import { type LucideIcon, Shield, User, UserCog, Wrench } from "lucide-react";
 import { useRouter } from "next/navigation";
 import { useState } from "react";
 import { toast } from "sonner";

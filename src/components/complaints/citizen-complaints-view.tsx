@@ -3,12 +3,10 @@
 import { ErrorState } from "@/components/shared/error-state";
 import { Pagination } from "@/components/shared/pagination";
 import { TableSkeleton } from "@/components/shared/table-skeleton";
-
-import { useUrlParams } from "@/hooks/use-url-params";
-
-import { ComplaintFilters } from "./complaint-filter";
-import { AdminComplaintsTable } from "./admin-complaints-table";
 import { useCitizenComplaints } from "@/hooks/use-citizen-complaints";
+import { useUrlParams } from "@/hooks/use-url-params";
+import { AdminComplaintsTable } from "./admin-complaints-table";
+import { ComplaintFilters } from "./complaint-filter";
 
 const LIMIT = 10;
 

@@ -6,12 +6,13 @@ import { CategoryField } from "@/components/complaints/category-field";
 import { FieldShell, nativeFieldClass } from "@/components/shared/field-shell";
 import { FormField } from "@/components/shared/form-field";
 import { Button } from "@/components/ui/button";
-
-import { titleOf } from "@/lib/format";
 import { useCreateComplaint } from "@/hooks/use-create-complaint";
-import { createComplaintSchema, CreateComplaintValues } from "@/lib/validations/create-complaint";
+import { titleOf } from "@/lib/format";
 import { PRIORITIES } from "@/lib/validations/complaint";
-
+import {
+  type CreateComplaintValues,
+  createComplaintSchema,
+} from "@/lib/validations/create-complaint";
 
 export function NewComplaintForm() {
   const mutation = useCreateComplaint();

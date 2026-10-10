@@ -56,7 +56,12 @@ export function LocationFields({
             Optional. Add your current GPS location.
           </p>
         </div>
-        <Button type="button" variant="outline" disabled={busy} onClick={locate}>
+        <Button
+          type="button"
+          variant="outline"
+          disabled={busy}
+          onClick={locate}
+        >
           {busy ? (
             <Loader2 className="size-4 animate-spin" />
           ) : (

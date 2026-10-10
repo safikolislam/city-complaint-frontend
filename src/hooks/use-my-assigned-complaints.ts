@@ -3,8 +3,8 @@
 import { keepPreviousData, useQuery } from "@tanstack/react-query";
 
 import { clientApi } from "@/lib/client-api";
-import { toQueryString } from "@/lib/query-string";
 import type { ComplaintItem } from "@/lib/complaints";
+import { toQueryString } from "@/lib/query-string";
 import type { ComplaintsQuery } from "@/types/admin";
 import type { PagedResult } from "@/types/paged";
 

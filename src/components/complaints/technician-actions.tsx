@@ -3,10 +3,10 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
 import { useChangeStatus } from "@/hooks/use-compliant-mutations";
-import { Card, CardContent } from "../ui/card";
-import { Button } from "../ui/button";
 import type { ComplaintStatus } from "@/types/complaint";
 import { FieldShell, nativeFieldClass } from "../shared/field-shell";
+import { Button } from "../ui/button";
+import { Card, CardContent } from "../ui/card";
 
 const noteSchema = z.object({
   note: z.string().max(500, "Note must be 500 characters or fewer"),

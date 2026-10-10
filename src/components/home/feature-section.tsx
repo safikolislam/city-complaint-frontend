@@ -1,3 +1,4 @@
+import type { LucideIcon } from "lucide-react";
 import {
   Building2,
   Clock,
@@ -6,7 +7,6 @@ import {
   MapPin,
   ShieldCheck,
 } from "lucide-react";
-import type { LucideIcon } from "lucide-react";
 import { SectionHeading } from "@/components/home/section-heading";
 import { Card, CardContent } from "@/components/ui/card";
 
