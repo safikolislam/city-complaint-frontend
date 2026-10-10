@@ -9,11 +9,9 @@ import { Button } from "@/components/ui/button";
 
 import { titleOf } from "@/lib/format";
 import { useCreateComplaint } from "@/hooks/use-create-complaint";
-import {
-  createComplaintSchema,
-  type CreateComplaintValues,
-  PRIORITY_OPTIONS,
-} from "@/lib/validations/complaint";
+import { createComplaintSchema, CreateComplaintValues } from "@/lib/validations/create-complaint";
+import { PRIORITIES } from "@/lib/validations/complaint";
+
 
 export function NewComplaintForm() {
   const mutation = useCreateComplaint();
@@ -60,7 +58,7 @@ export function NewComplaintForm() {
           className={nativeFieldClass}
           {...register("priority")}
         >
-          {PRIORITY_OPTIONS.map((p) => (
+          {PRIORITIES.map((p) => (
             <option key={p} value={p}>
               {titleOf(p)}
             </option>

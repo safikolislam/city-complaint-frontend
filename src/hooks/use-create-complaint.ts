@@ -1,34 +1,37 @@
 "use client";
 
-import { useMutation } from "@tanstack/react-query";
+import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { useRouter } from "next/navigation";
 import { toast } from "sonner";
-import { successAlert } from "@/lib/alert";
 import { clientApi } from "@/lib/client-api";
-import type { CreateComplaintValues } from "@/lib/validations/complaint";
-import type { ComplaintStatus } from "@/types/complaint";
+import type { CreateComplaintValues } from "@/lib/validations/create-complaint";
 
-const LIST = "/dashboard/citizen/complaints";
+const toNumber = (value: string) => (value === "" ? undefined : Number(value));
 
 export function useCreateComplaint() {
   const router = useRouter();
+  const client = useQueryClient();
 
   return useMutation({
-    mutationFn: (values: CreateComplaintValues) =>
-      clientApi<{ id: string; status: ComplaintStatus }>("/complaints", {
+    mutationFn: ({ latitude, longitude, ...rest }: CreateComplaintValues) =>
+      clientApi<{ id: string; status: string }>("/complaints", {
         method: "POST",
-        body: values,
+        body: {
+          ...rest,
+          latitude: toNumber(latitude),
+          longitude: toNumber(longitude),
+        },
       }),
-    onSuccess: ({ data }) => {
-      successAlert(
-        "Complaint submitted",
-        data.status === "PENDING_PAYMENT"
-          ? "Payment is required to continue."
-          : undefined,
+    onSuccess: (res) => {
+      toast.success(
+        res.data.status === "PENDING_PAYMENT"
+          ? "Saved. Pay the service fee from your complaint list."
+          : "Complaint submitted successfully",
       );
-      router.push(`${LIST}/${data.id}`);
+      client.invalidateQueries({ queryKey: ["payment-requests"] });
+      router.push("/dashboard/citizen/complaints");
       router.refresh();
     },
-    onError: (error: Error) => toast.error(error.message),
+    onError: (error) => toast.error(error.message),
   });
 }

@@ -55,3 +55,10 @@ export interface Category {
   name: string;
   serviceFee?: string | number | null;
 }
+
+export interface StatusHistoryItem {
+  id: string;
+  fromStatus: string | null;
+
+  createdAt: string;
+}

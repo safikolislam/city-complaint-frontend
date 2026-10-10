@@ -1,12 +1,12 @@
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { formatDateTime, titleOf } from "@/lib/format";
-import type { HistoryEntry } from "@/types/complaint-view";
+import type { StatusHistoryItem } from "@/types/complaint";
 
-export function OverviewHistory({ items }: { items: HistoryEntry[] }) {
+export function OverviewHistory({ items }: { items: StatusHistoryItem[] }) {
   return (
     <Card>
       <CardHeader>
-        <CardTitle className="text-base">Progress history</CardTitle>
+        <CardTitle className="text-base">Progress</CardTitle>
       </CardHeader>
       <CardContent>
         <ol className="relative space-y-5 border-l pl-6">
