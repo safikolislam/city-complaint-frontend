@@ -6,16 +6,15 @@ import { Pagination } from "@/components/shared/pagination";
 import { TableSkeleton } from "@/components/shared/table-skeleton";
 import { useAdminComplaints } from "@/hooks/use-admin-complaints";
 import { useUrlParams } from "@/hooks/use-url-params";
-import { AdminComplaintsTable } from "./complaints-table";
+
+import { AdminComplaintsTable } from "./admin-complaints-table";
 import { ComplaintFilters } from "./complaint-filter";
+import { PRIORITY_OPTIONS } from "@/lib/validations/complaint";
+
+
 
 const LIMIT = 10;
-const PRIORITIES = ["LOW", "MEDIUM", "HIGH"] as const;
 
-const PRIORITY_OPTIONS = PRIORITIES.map((value) => ({
-  value,
-  label: value.toLowerCase(),
-}));
 
 export function ComplaintsView() {
   const { searchParams } = useUrlParams();
@@ -23,8 +22,13 @@ export function ComplaintsView() {
   const status = searchParams.get("status") ?? "";
   const priority = searchParams.get("priority") ?? "";
   const search = searchParams.get("search") ?? "";
-  const query = { page, limit: LIMIT, status, priority, search };
-  const complaints = useAdminComplaints(query);
+  const complaints = useAdminComplaints({
+    page,
+    limit: LIMIT,
+    status,
+    priority,
+    search,
+  });
 
   let body: React.ReactNode;
   if (complaints.isPending) {
@@ -40,11 +44,11 @@ export function ComplaintsView() {
     body = (
       <div className={complaints.isPlaceholderData ? "opacity-60" : undefined}>
         <div className="space-y-6">
-          <AdminComplaintsTable items={complaints.data?.items ?? []} />
+          <AdminComplaintsTable items={complaints.data.items} />
           <Pagination
             page={page}
             limit={LIMIT}
-            total={complaints.data?.meta?.total ?? 0}
+            total={complaints.data.meta?.total ?? 0}
           />
         </div>
       </div>

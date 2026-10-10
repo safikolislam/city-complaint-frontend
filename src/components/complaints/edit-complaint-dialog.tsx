@@ -6,12 +6,11 @@ import { FieldShell, nativeFieldClass } from "@/components/shared/field-shell";
 import { FormField } from "@/components/shared/form-field";
 import { Modal } from "@/components/shared/modal";
 import { Button } from "@/components/ui/button";
-import { useEditComplaint } from "@/hooks/use-citizen-complaints";
-import {
-  type EditComplaintValues,
-  editComplaintSchema,
-} from "@/lib/validations/complaint";
+
+
 import type { ComplaintDetail } from "@/types/complaint";
+import { useEditComplaint } from "@/hooks/use-edit-complaint";
+import { editComplaintSchema, EditComplaintValues } from "@/lib/validations/edit-complaint";
 
 interface EditDialogProps {
   complaint: ComplaintDetail;

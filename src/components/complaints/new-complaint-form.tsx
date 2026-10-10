@@ -6,13 +6,11 @@ import { CategoryField } from "@/components/complaints/category-field";
 import { FieldShell, nativeFieldClass } from "@/components/shared/field-shell";
 import { FormField } from "@/components/shared/form-field";
 import { Button } from "@/components/ui/button";
-import { useCreateComplaint } from "@/hooks/use-citizen-complaints";
+
 import { titleOf } from "@/lib/format";
-import {
-  type CreateComplaintValues,
-  createComplaintSchema,
-  PRIORITY_OPTIONS,
-} from "@/lib/validations/complaint";
+import { useCreateComplaint } from "@/hooks/use-create-complaint";
+import { createComplaintSchema, CreateComplaintValues, PRIORITY_OPTIONS } from "@/lib/validations/complaint";
+
 
 export function NewComplaintForm() {
   const mutation = useCreateComplaint();
@@ -49,7 +47,11 @@ export function NewComplaintForm() {
         selectedId={watch("categoryId")}
         error={errors.categoryId?.message}
       />
-      <FieldShell id="priority" label="Priority" error={errors.priority?.message}>
+      <FieldShell
+        id="priority"
+        label="Priority"
+        error={errors.priority?.message}
+      >
         <select
           id="priority"
           className={nativeFieldClass}
