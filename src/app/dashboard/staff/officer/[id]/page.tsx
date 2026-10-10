@@ -1,5 +1,6 @@
 import { ComplaintOverview } from "@/components/complaints/complaint-overview";
-import { OfficerAssignDialog } from "@/components/officer/officer-assign-dialogue";
+import { AssignTechnicianDialog } from "@/components/complaints/officer/assign-technician-dialog";
+
 import { BackLink } from "@/components/shared/back-link";
 import { staffHome } from "@/config/routes";
 import { getComplaint } from "@/lib/complaints";
@@ -19,7 +20,7 @@ export default async function OfficerComplaintPage({
       <BackLink href={staffHome.OFFICER} label="Back to complaints" />
       <div className="flex flex-wrap items-center justify-between gap-3">
         <h1 className="text-2xl font-bold">{c.title}</h1>
-        <OfficerAssignDialog
+        <AssignTechnicianDialog
           complaint={{ id: c.id, title: c.title, status: c.status }}
         />
       </div>

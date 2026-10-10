@@ -5,8 +5,8 @@ import { useRouter } from "next/navigation";
 import { toast } from "sonner";
 import { officerComplaintsKey } from "@/hooks/use-officer-complaints";
 import { clientApi } from "@/lib/client-api";
-import type { ComplaintItem } from "@/lib/complaints";
 import type { PagedResult } from "@/types/paged";
+import type { ComplaintItem } from "@/types/complaint";
 
 type Cached = PagedResult<ComplaintItem> | undefined;
 

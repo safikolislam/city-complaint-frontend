@@ -9,11 +9,22 @@ export interface Technician {
   email: string;
 }
 
-export function useDepartmentTechnicians() {
+export function useDepartmentTechnicians(
+  departmentId?: string,
+  enabled = true,
+) {
   return useQuery({
-    queryKey: ["department-technicians"],
-    queryFn: async () =>
-      (await clientApi<Technician[]>("/complaints/technicians")).data,
+    queryKey: ["department-technicians", departmentId],
+    queryFn: async () => {
+      
+      const url = departmentId
+        ? `/staff/technicians?departmentId=${departmentId}`
+        : `/staff/technicians`;
+      const res = await clientApi<Technician[]>(url);
+      return res.data;
+    },
+   
+    enabled: Boolean(departmentId) && enabled,
     staleTime: 60_000,
   });
 }

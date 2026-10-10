@@ -1,47 +1,46 @@
 "use client";
 
-import { zodResolver } from "@hookform/resolvers/zod";
 import { Loader2, UserPlus } from "lucide-react";
 import { usePathname } from "next/navigation";
 import { useState } from "react";
-import { useForm } from "react-hook-form";
-import { FieldShell, nativeFieldClass } from "@/components/shared/field-shell";
+
 import { Modal } from "@/components/shared/modal";
 import { Button } from "@/components/ui/button";
 import { useAssignComplaint } from "@/hooks/use-assign-complaint";
 import { useDepartmentOfficers } from "@/hooks/use-department-officers";
-import { type AssignValues, assignSchema } from "@/lib/validations/assign";
+import { useOfficerAssign } from "@/hooks/use-officer-assign";
+import { useTechnicians } from "@/hooks/use-technicians";
 import type { ComplaintItem } from "@/types/complaint";
+import { OfficerAssignForm } from "../staff/officer-assign-form";
 
-const ALLOWED_AREAS = ["/dashboard/admin", "/dashboard/staff/officer"];
+const ASSIGNABLE: string[] = ["PENDING", "REOPENED"];
 
 export function AssignDialog({ complaint }: { complaint: ComplaintItem }) {
   const pathname = usePathname();
   const [open, setOpen] = useState(false);
-  const { officers, isLoading, error } = useDepartmentOfficers(
-    complaint.department?.id,
-    open,
-  );
-  const mutation = useAssignComplaint(complaint.id, () => setOpen(false));
-  const {
-    register,
-    handleSubmit,
-    reset,
-    formState: { errors },
-  } = useForm<AssignValues>({
-    resolver: zodResolver(assignSchema),
-    defaultValues: { staffId: "" },
-  });
+  const isAdmin = pathname.startsWith("/dashboard/admin");
+  const isOfficer = pathname.startsWith("/dashboard/staff/officer");
+  const departmentId = complaint.department?.id;
+  const close = () => setOpen(false);
 
-  if (!ALLOWED_AREAS.some((area) => pathname.startsWith(area))) return null;
+  const officers = useDepartmentOfficers(departmentId, open && isAdmin);
+  const technicians = useTechnicians(open && isOfficer);
+  const adminAssign = useAssignComplaint(complaint.id, close);
+  const officerAssign = useOfficerAssign(complaint.id, close);
 
-  const canAssign =
-    complaint.status === "PENDING" || complaint.status === "REOPENED";
+  if (!isAdmin && !isOfficer) return null;
 
-  const closeModal = () => {
-    if (mutation.isPending) return;
-    setOpen(false);
-    reset();
+  const people: Person[] = isAdmin
+    ? officers.officers
+    : (technicians.data ?? []);
+  const loading = isAdmin ? officers.isLoading : technicians.isLoading;
+  const error = isAdmin ? officers.error : technicians.error;
+  const pending = adminAssign.isPending || officerAssign.isPending;
+  const label = isAdmin ? "Officer" : "Technician";
+
+  const submit = (id: string) => {
+    if (isAdmin) adminAssign.mutate({ staffId: id });
+    else officerAssign.mutate(id);
   };
 
   return (
@@ -49,14 +48,20 @@ export function AssignDialog({ complaint }: { complaint: ComplaintItem }) {
       <Button
         variant="outline"
         size="sm"
-        disabled={!canAssign}
+        disabled={!ASSIGNABLE.includes(complaint.status)}
         onClick={() => setOpen(true)}
       >
         <UserPlus className="mr-2 size-4" />
         Assign
       </Button>
 
-      <Modal open={open} onClose={closeModal} title="Assign to officer">
+      <Modal
+        open={open}
+        onClose={() => {
+          if (!pending) close();
+        }}
+        title={`Assign to ${label.toLowerCase()}`}
+      >
         <div className="mb-4 rounded-lg bg-muted/50 p-4">
           <p className="font-semibold">{complaint.title}</p>
           <p className="mt-1 text-sm text-muted-foreground">
@@ -64,59 +69,27 @@ export function AssignDialog({ complaint }: { complaint: ComplaintItem }) {
           </p>
         </div>
 
-        {isLoading ? (
-          <div className="flex items-center justify-center py-8">
+        {isAdmin && !departmentId ? (
+          <p className="py-6 text-center text-sm text-destructive">
+            Department is missing for this complaint.
+          </p>
+        ) : loading ? (
+          <div className="flex justify-center py-8">
             <Loader2 className="size-6 animate-spin" />
           </div>
         ) : error ? (
           <p className="py-6 text-center text-sm text-destructive">
             {error.message}
           </p>
-        ) : (
-          <form
-            onSubmit={handleSubmit((values) => mutation.mutate(values))}
-            className="space-y-4"
-            noValidate
-          >
-            <FieldShell
-              id="staffId"
-              label="Officer"
-              error={errors.staffId?.message}
-            >
-              <select
-                id="staffId"
-                className={nativeFieldClass}
-                disabled={mutation.isPending}
-                {...register("staffId")}
-              >
-                <option value="">Select officer</option>
-                {officers.map((o) => (
-                  <option key={o.id} value={o.id}>
-                    {o.name} ({o.email})
-                  </option>
-                ))}
-              </select>
-              {officers.length === 0 ? (
-                <p className="text-xs text-muted-foreground">
-                  No officer found for this department.
-                </p>
-              ) : null}
-            </FieldShell>
-            <div className="flex justify-end gap-3 border-t pt-4">
-              <Button
-                type="button"
-                variant="outline"
-                onClick={closeModal}
-                disabled={mutation.isPending}
-              >
-                Cancel
-              </Button>
-              <Button type="submit" disabled={mutation.isPending}>
-                {mutation.isPending ? "Assigning..." : "Assign"}
-              </Button>
-            </div>
-          </form>
-        )}
+        ) : open ? (
+          <OfficerAssignForm
+            label={label}
+            people={people}
+            pending={pending}
+            onSubmit={submit}
+            onCancel={close}
+          />
+        ) : null}
       </Modal>
     </>
   );

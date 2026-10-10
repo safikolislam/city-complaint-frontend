@@ -8,11 +8,12 @@ import { FormField } from "@/components/shared/form-field";
 import { Button } from "@/components/ui/button";
 import { useCreateComplaint } from "@/hooks/use-create-complaint";
 import { titleOf } from "@/lib/format";
-import { PRIORITIES } from "@/lib/validations/complaint";
+
 import {
   type CreateComplaintValues,
   createComplaintSchema,
 } from "@/lib/validations/create-complaint";
+import { PRIORITIES } from "@/lib/validations/complaint";
 
 export function NewComplaintForm() {
   const mutation = useCreateComplaint();
@@ -29,12 +30,22 @@ export function NewComplaintForm() {
       address: "",
       categoryId: "",
       priority: "MEDIUM",
+      latitude: "",
+      longitude: "",
     },
   });
 
+  const onSubmit = (values: CreateComplaintValues) => {
+    mutation.mutate(values);
+  };
+
+  const onError = (formErrors: any) => {
+    console.log("Validation Errors:", formErrors);
+  };
+
   return (
     <form
-      onSubmit={handleSubmit((values) => mutation.mutate(values))}
+      onSubmit={handleSubmit(onSubmit, onError)}
       className="space-y-4"
       noValidate
     >

@@ -9,7 +9,7 @@ export interface Technician {
   email: string;
 }
 
-export function useTechnicians(enabled: boolean) {
+export function useTechnicians(enabled = true) {
   return useQuery({
     queryKey: ["technicians"],
     queryFn: async () =>
