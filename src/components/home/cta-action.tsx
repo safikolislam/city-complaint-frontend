@@ -5,18 +5,18 @@ import { cn } from "@/lib/utils";
 export function CtaSection() {
   return (
     <section className="px-4 pb-16 sm:pb-20">
-      <div className="mx-auto max-w-6xl rounded-2xl bg-primary px-6 py-12 text-center text-primary-foreground">
-        <h2 className="text-3xl font-bold tracking-tight">
+      <div className="mx-auto max-w-6xl rounded-2xl bg-white border border-neutral-200 px-6 py-12 text-center shadow-sm">
+        <h2 className="text-3xl font-bold tracking-tight text-black">
           See a problem? Report it today.
         </h2>
-        <p className="mx-auto mt-3 max-w-xl text-primary-foreground/80">
+        <p className="mx-auto mt-3 max-w-xl text-neutral-600">
           It takes about a minute, and you can follow every update from your
           dashboard.
         </p>
         <div className="mt-6 flex flex-wrap justify-center gap-3">
           <Link
             href="/auth/register"
-            className={buttonVariants({ variant: "secondary", size: "lg" })}
+            className={buttonVariants({ variant: "default", size: "lg" })}
           >
             Create an account
           </Link>
@@ -24,7 +24,7 @@ export function CtaSection() {
             href="/auth/login"
             className={cn(
               buttonVariants({ variant: "outline", size: "lg" }),
-              "border-primary-foreground/40 bg-transparent text-primary-foreground hover:bg-primary-foreground/10 hover:text-primary-foreground",
+              "border-neutral-300 bg-transparent text-black hover:bg-neutral-100 hover:text-black",
             )}
           >
             Log in
