@@ -14,7 +14,7 @@ function send(
   if (body) headers["Content-Type"] = "application/json";
   if (token) headers.Authorization = `Bearer ${token}`;
 
-  const url = `${process.env.API_BASE_URL}/${path.join("/")}`;
+  const url = `${process.env.NEXT_PUBLIC_API_URL}/${path.join("/")}`;
   return fetch(`${url}${request.nextUrl.search}`, {
     method: request.method,
     headers,
