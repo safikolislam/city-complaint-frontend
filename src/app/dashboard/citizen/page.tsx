@@ -78,7 +78,10 @@ export default async function CitizenOverviewPage() {
       </div>
 
       <div className="grid gap-4 lg:grid-cols-2">
-        <BreakdownChart title="Complaints by category" data={stats.byCategory} />
+        <BreakdownChart
+          title="Complaints by category"
+          data={stats.byCategory}
+        />
         <CitizenPaymentCard
           totalPaid={totalPaid}
           currency={paid[0]?.currency ?? "BDT"}

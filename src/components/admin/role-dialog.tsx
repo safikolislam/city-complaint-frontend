@@ -11,7 +11,7 @@ import { Modal } from "@/components/shared/modal";
 import { Button } from "@/components/ui/button";
 
 import { type RoleValues, roleSchema } from "@/lib/validations/role";
-import { AdminUser, Department } from "@/types/admin";
+import type { AdminUser, Department } from "@/types/admin";
 import { clientApi } from "@/lib/client-api";
 import { FieldShell, nativeFieldClass } from "../shared/field-shell";
 

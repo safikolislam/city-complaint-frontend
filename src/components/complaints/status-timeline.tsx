@@ -1,7 +1,7 @@
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 
 import { formatDateTime, titleOf } from "@/lib/format";
-import { StatusHistoryItem } from "@/types/complaint";
+import type { StatusHistoryItem } from "@/types/complaint";
 
 export function StatusTimeline({ items }: { items: StatusHistoryItem[] }) {
   return (

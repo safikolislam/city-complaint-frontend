@@ -4,7 +4,9 @@ import { buttonVariants } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 
 const ICONS = {
-  success: <CheckCircle2 className="size-12 text-green-600" aria-hidden="true" />,
+  success: (
+    <CheckCircle2 className="size-12 text-green-600" aria-hidden="true" />
+  ),
   pending: <Clock className="size-12 text-amber-500" aria-hidden="true" />,
   failed: <XCircle className="size-12 text-destructive" aria-hidden="true" />,
 };

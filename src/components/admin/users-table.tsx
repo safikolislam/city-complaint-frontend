@@ -12,7 +12,7 @@ import {
 } from "@/components/ui/table";
 
 import { formatDate, titleOf } from "@/lib/format";
-import { AdminUser } from "@/types/admin";
+import type { AdminUser } from "@/types/admin";
 
 interface UsersTableProps {
   items: AdminUser[];

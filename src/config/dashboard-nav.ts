@@ -45,7 +45,11 @@ const citizenNav: NavItem[] = [
     icon: FileText,
   },
   { label: "New Complaint", href: "/dashboard/citizen/new", icon: FilePlus2 },
-  { label: "Payment History", href: "/dashboard/citizen/payment-history", icon: CreditCard },
+  {
+    label: "Payment History",
+    href: "/dashboard/citizen/payment-history",
+    icon: CreditCard,
+  },
   profile,
 ];
 

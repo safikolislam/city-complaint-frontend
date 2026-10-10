@@ -1,6 +1,5 @@
 "use client";
 
-
 import { ErrorState } from "@/components/shared/error-state";
 import { Pagination } from "@/components/shared/pagination";
 import { TableSkeleton } from "@/components/shared/table-skeleton";
@@ -25,7 +24,10 @@ export function TasksView() {
     body = <TableSkeleton />;
   } else if (tasks.isError) {
     body = (
-      <ErrorState message={tasks.error.message} onRetry={() => tasks.refetch()} />
+      <ErrorState
+        message={tasks.error.message}
+        onRetry={() => tasks.refetch()}
+      />
     );
   } else {
     body = (

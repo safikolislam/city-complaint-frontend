@@ -11,7 +11,7 @@ import {
 } from "@/components/ui/table";
 
 import { formatDateTime, titleOf } from "@/lib/format";
-import { AuditLogItem } from "@/types/admin";
+import type { AuditLogItem } from "@/types/admin";
 
 export function AuditTable({ items }: { items: AuditLogItem[] }) {
   if (items.length === 0) {

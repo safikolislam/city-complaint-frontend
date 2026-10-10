@@ -8,7 +8,10 @@ import { Card, CardContent } from "@/components/ui/card";
 import { useChangeStatus } from "@/hooks/use-compliant-mutations";
 import { confirmAlert, promptAlert } from "@/lib/alert";
 import type { ComplaintDetail } from "@/types/complaint";
-import { useCancelComplaint, useDeleteComplaint } from "@/hooks/use-complaint-action";
+import {
+  useCancelComplaint,
+  useDeleteComplaint,
+} from "@/hooks/use-complaint-action";
 
 const EDITABLE: string[] = ["PENDING_PAYMENT", "PENDING"];
 const CANCELLABLE: string[] = ["PENDING_PAYMENT", "PENDING", "ASSIGNED"];
@@ -63,7 +66,11 @@ export function CitizenActions({ complaint }: { complaint: ComplaintDetail }) {
         ) : null}
         <div className="flex flex-wrap gap-2">
           {editable ? (
-            <Button variant="outline" disabled={busy} onClick={() => setEditing(true)}>
+            <Button
+              variant="outline"
+              disabled={busy}
+              onClick={() => setEditing(true)}
+            >
               Edit
             </Button>
           ) : null}
@@ -79,7 +86,10 @@ export function CitizenActions({ complaint }: { complaint: ComplaintDetail }) {
           ) : null}
           {resolved ? (
             <>
-              <Button disabled={busy} onClick={() => change.mutate({ status: "CLOSED" })}>
+              <Button
+                disabled={busy}
+                onClick={() => change.mutate({ status: "CLOSED" })}
+              >
                 Confirm and close
               </Button>
               <Button variant="outline" disabled={busy} onClick={askReopen}>

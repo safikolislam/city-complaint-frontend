@@ -78,7 +78,11 @@ export function AssignDialog({ complaint }: { complaint: ComplaintItem }) {
             className="space-y-4"
             noValidate
           >
-            <FieldShell id="staffId" label="Officer" error={errors.staffId?.message}>
+            <FieldShell
+              id="staffId"
+              label="Officer"
+              error={errors.staffId?.message}
+            >
               <select
                 id="staffId"
                 className={nativeFieldClass}

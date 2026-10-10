@@ -1,4 +1,3 @@
-
 import { ComplaintOverview } from "@/components/complaints/complaint-overview";
 import { BackLink } from "@/components/shared/back-link";
 import { WorkActions } from "@/components/staff/work-actions";

@@ -1,6 +1,5 @@
 "use client";
 
-
 import { PaymentsTable } from "@/components/payments/payments-table";
 import { ErrorState } from "@/components/shared/error-state";
 import { ListFilters } from "@/components/shared/list-filters";

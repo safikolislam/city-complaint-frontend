@@ -7,10 +7,12 @@ import { FormField } from "@/components/shared/form-field";
 import { Modal } from "@/components/shared/modal";
 import { Button } from "@/components/ui/button";
 
-
 import type { ComplaintDetail } from "@/types/complaint";
 import { useEditComplaint } from "@/hooks/use-edit-complaint";
-import { editComplaintSchema, EditComplaintValues } from "@/lib/validations/edit-complaint";
+import {
+  editComplaintSchema,
+  type EditComplaintValues,
+} from "@/lib/validations/edit-complaint";
 
 interface EditDialogProps {
   complaint: ComplaintDetail;
@@ -18,7 +20,11 @@ interface EditDialogProps {
   onClose: () => void;
 }
 
-export function EditComplaintDialog({ complaint, open, onClose }: EditDialogProps) {
+export function EditComplaintDialog({
+  complaint,
+  open,
+  onClose,
+}: EditDialogProps) {
   const mutation = useEditComplaint(complaint.id, onClose);
   const {
     register,
@@ -40,10 +46,29 @@ export function EditComplaintDialog({ complaint, open, onClose }: EditDialogProp
         className="space-y-4"
         noValidate
       >
-        <FormField id="title" label="Title" error={errors.title?.message} {...register("title")} />
-        <FormField id="address" label="Address" error={errors.address?.message} {...register("address")} />
-        <FieldShell id="description" label="Description" error={errors.description?.message}>
-          <textarea id="description" rows={4} className={nativeFieldClass} {...register("description")} />
+        <FormField
+          id="title"
+          label="Title"
+          error={errors.title?.message}
+          {...register("title")}
+        />
+        <FormField
+          id="address"
+          label="Address"
+          error={errors.address?.message}
+          {...register("address")}
+        />
+        <FieldShell
+          id="description"
+          label="Description"
+          error={errors.description?.message}
+        >
+          <textarea
+            id="description"
+            rows={4}
+            className={nativeFieldClass}
+            {...register("description")}
+          />
         </FieldShell>
         <div className="flex justify-end gap-3 pt-2">
           <Button type="button" variant="outline" onClick={onClose}>

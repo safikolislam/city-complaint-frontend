@@ -9,8 +9,11 @@ import { Button } from "@/components/ui/button";
 
 import { titleOf } from "@/lib/format";
 import { useCreateComplaint } from "@/hooks/use-create-complaint";
-import { createComplaintSchema, CreateComplaintValues, PRIORITY_OPTIONS } from "@/lib/validations/complaint";
-
+import {
+  createComplaintSchema,
+  type CreateComplaintValues,
+  PRIORITY_OPTIONS,
+} from "@/lib/validations/complaint";
 
 export function NewComplaintForm() {
   const mutation = useCreateComplaint();

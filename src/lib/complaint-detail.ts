@@ -26,4 +26,3 @@ export async function getComplaint(id: string) {
     throw error;
   }
 }
-

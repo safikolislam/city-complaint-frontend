@@ -1,6 +1,5 @@
 "use client";
 
-
 import { OfficerTable } from "@/components/officer/officer-table";
 import { ErrorState } from "@/components/shared/error-state";
 import { Pagination } from "@/components/shared/pagination";

@@ -5,7 +5,7 @@ import { clientApi } from "@/lib/client-api";
 import { toQueryString } from "@/lib/query-string";
 
 import type { PagedResult } from "@/types/paged";
-import { UserItem } from "@/types/user";
+import type { UserItem } from "@/types/user";
 
 export interface UsersQuery {
   page?: number;

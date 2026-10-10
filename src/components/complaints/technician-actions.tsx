@@ -5,7 +5,7 @@ import { z } from "zod";
 import { useChangeStatus } from "@/hooks/use-compliant-mutations";
 import { Card, CardContent } from "../ui/card";
 import { Button } from "../ui/button";
-import { ComplaintStatus } from "@/types/complaint";
+import type { ComplaintStatus } from "@/types/complaint";
 import { FieldShell, nativeFieldClass } from "../shared/field-shell";
 
 const noteSchema = z.object({

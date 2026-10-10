@@ -1,4 +1,3 @@
-
 import { ComplaintFilters } from "./complaint-filter";
 
 import { Pagination } from "@/components/shared/pagination";

@@ -30,7 +30,8 @@ export function PaymentsTable({ rows }: { rows: PaymentRow[] }) {
           <Inbox className="size-10 text-muted-foreground" />
           <p className="font-medium">No paid service requests</p>
           <p className="text-sm text-muted-foreground">
-            Requests for paid services will appear here with their payment status.
+            Requests for paid services will appear here with their payment
+            status.
           </p>
         </CardContent>
       </Card>
@@ -70,7 +71,10 @@ export function PaymentsTable({ rows }: { rows: PaymentRow[] }) {
                   ) : (
                     <Link
                       href={`/dashboard/citizen/complaints/${item.id}`}
-                      className={buttonVariants({ variant: "outline", size: "sm" })}
+                      className={buttonVariants({
+                        variant: "outline",
+                        size: "sm",
+                      })}
                     >
                       View
                     </Link>

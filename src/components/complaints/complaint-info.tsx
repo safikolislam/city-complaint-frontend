@@ -2,7 +2,7 @@ import { StatusBadge } from "@/components/complaints/status-badge";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 
 import { formatDate, titleOf } from "@/lib/format";
-import { ComplaintDetail } from "@/types/complaint";
+import type { ComplaintDetail } from "@/types/complaint";
 
 function Row({ label, value }: { label: string; value: string }) {
   return (

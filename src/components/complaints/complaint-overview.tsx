@@ -2,7 +2,7 @@ import { OverviewHistory } from "@/components/complaints/overview-history";
 import { StatusBadge } from "@/components/complaints/status-badge";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { formatDate, titleOf } from "@/lib/format";
-import type { ComplaintView } from "@/types/complaint-view";
+import type { ComplaintDetail } from "@/types/complaint";
 
 function Detail({ label, value }: { label: string; value: string }) {
   return (
@@ -13,7 +13,11 @@ function Detail({ label, value }: { label: string; value: string }) {
   );
 }
 
-export function ComplaintOverview({ complaint: c }: { complaint: ComplaintView }) {
+export function ComplaintOverview({
+  complaint: c,
+}: {
+  complaint: ComplaintDetail;
+}) {
   return (
     <div className="space-y-6">
       <Card>

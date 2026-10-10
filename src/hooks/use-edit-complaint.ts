@@ -6,8 +6,7 @@ import { toast } from "sonner";
 import { complaintKey } from "@/hooks/use-compliant-mutations";
 import { successAlert } from "@/lib/alert";
 import { clientApi } from "@/lib/client-api";
-import { EditComplaintValues } from "@/lib/validations/edit-complaint";
-
+import type { EditComplaintValues } from "@/lib/validations/edit-complaint";
 
 export function useEditComplaint(id: string, onDone: () => void) {
   const client = useQueryClient();

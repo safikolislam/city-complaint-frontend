@@ -11,7 +11,6 @@ export const staffHome: Record<StaffPosition, string> = {
   TECHNICIAN: "/dashboard/staff/technician",
 };
 
-
 export function homeFor(user: {
   role: Role;
   staffPosition?: StaffPosition | null;

@@ -11,7 +11,10 @@ import {
   TableRow,
 } from "@/components/ui/table";
 import { formatDateTime, titleOf } from "@/lib/format";
-import type { PaymentHistoryItem, PaymentStatus } from "@/types/payment-history";
+import type {
+  PaymentHistoryItem,
+  PaymentStatus,
+} from "@/types/payment-history";
 
 const BADGES: Record<PaymentStatus, "default" | "secondary" | "destructive"> = {
   PAID: "default",
@@ -20,7 +23,11 @@ const BADGES: Record<PaymentStatus, "default" | "secondary" | "destructive"> = {
   CANCELLED: "destructive",
 };
 
-export function PaymentHistoryTable({ items }: { items: PaymentHistoryItem[] }) {
+export function PaymentHistoryTable({
+  items,
+}: {
+  items: PaymentHistoryItem[];
+}) {
   if (items.length === 0) {
     return (
       <Card>
@@ -64,7 +71,9 @@ export function PaymentHistoryTable({ items }: { items: PaymentHistoryItem[] }) 
                 <TableCell>
                   {Number(p.amount).toLocaleString()} {p.currency ?? ""}
                 </TableCell>
-                <TableCell>{p.gateway === "BKASH" ? "bKash" : titleOf(p.gateway)}</TableCell>
+                <TableCell>
+                  {p.gateway === "BKASH" ? "bKash" : titleOf(p.gateway)}
+                </TableCell>
                 <TableCell className="font-mono text-xs">
                   {p.transactionId ?? "-"}
                 </TableCell>

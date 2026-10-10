@@ -1,4 +1,3 @@
-
 import { NewComplaintForm } from "@/components/complaints/new-complaint-form";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 
@@ -11,7 +10,7 @@ export default function NewComplaintPage() {
         <CardTitle>New complaint</CardTitle>
       </CardHeader>
       <CardContent>
-        <NewComplaintForm/>
+        <NewComplaintForm />
       </CardContent>
     </Card>
   );

@@ -1,4 +1,3 @@
-
 import { NewComplaintForm } from "@/components/complaints/new-complaint-form";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 

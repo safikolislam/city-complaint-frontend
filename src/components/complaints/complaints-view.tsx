@@ -6,15 +6,16 @@ import { Pagination } from "@/components/shared/pagination";
 import { TableSkeleton } from "@/components/shared/table-skeleton";
 import { useAdminComplaints } from "@/hooks/use-admin-complaints";
 import { useUrlParams } from "@/hooks/use-url-params";
-
+import { PRIORITY_OPTIONS } from "@/lib/validations/complaint";
 import { AdminComplaintsTable } from "./admin-complaints-table";
 import { ComplaintFilters } from "./complaint-filter";
-import { PRIORITY_OPTIONS } from "@/lib/validations/complaint";
-
-
 
 const LIMIT = 10;
 
+const priorityOptions = PRIORITY_OPTIONS.map((value) => ({
+  value,
+  label: value.charAt(0) + value.slice(1).toLowerCase(),
+}));
 
 export function ComplaintsView() {
   const { searchParams } = useUrlParams();
@@ -62,7 +63,7 @@ export function ComplaintsView() {
         <ListFilters
           selectParam="priority"
           selectLabel="All priorities"
-          options={PRIORITY_OPTIONS}
+          options={priorityOptions}
         />
       </div>
       {body}
