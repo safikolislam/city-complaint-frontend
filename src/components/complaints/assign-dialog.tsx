@@ -3,7 +3,7 @@
 import { Loader2, UserPlus } from "lucide-react";
 import { usePathname } from "next/navigation";
 import { useState } from "react";
-
+import { AssignForm, type Person } from "@/components/complaints/assign-form";
 import { Modal } from "@/components/shared/modal";
 import { Button } from "@/components/ui/button";
 import { useAssignComplaint } from "@/hooks/use-assign-complaint";
@@ -11,7 +11,6 @@ import { useDepartmentOfficers } from "@/hooks/use-department-officers";
 import { useOfficerAssign } from "@/hooks/use-officer-assign";
 import { useTechnicians } from "@/hooks/use-technicians";
 import type { ComplaintItem } from "@/types/complaint";
-import { OfficerAssignForm } from "../staff/officer-assign-form";
 
 const ASSIGNABLE: string[] = ["PENDING", "REOPENED"];
 
@@ -82,7 +81,7 @@ export function AssignDialog({ complaint }: { complaint: ComplaintItem }) {
             {error.message}
           </p>
         ) : open ? (
-          <OfficerAssignForm
+          <AssignForm
             label={label}
             people={people}
             pending={pending}
