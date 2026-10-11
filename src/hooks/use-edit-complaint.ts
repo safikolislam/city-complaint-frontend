@@ -6,7 +6,8 @@ import { toast } from "sonner";
 import { complaintKey } from "@/hooks/use-compliant-mutations";
 import { successAlert } from "@/lib/alert";
 import { clientApi } from "@/lib/client-api";
-import type { EditComplaintValues } from "@/lib/validations/edit-complaint";
+import { EditComplaintValues } from "@/lib/validations/edit-complaint-field";
+
 
 export function useEditComplaint(id: string, onDone: () => void) {
   const client = useQueryClient();
@@ -21,6 +22,6 @@ export function useEditComplaint(id: string, onDone: () => void) {
       client.invalidateQueries({ queryKey: complaintKey(id) });
       router.refresh();
     },
-    onError: (error: Error) => toast.error(error.message),
+    onError: (error) => toast.error(error.message),
   });
 }

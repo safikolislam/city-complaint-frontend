@@ -7,11 +7,9 @@ import { FormField } from "@/components/shared/form-field";
 import { Modal } from "@/components/shared/modal";
 import { Button } from "@/components/ui/button";
 import { useEditComplaint } from "@/hooks/use-edit-complaint";
-import {
-  type EditComplaintValues,
-  editComplaintSchema,
-} from "@/lib/validations/edit-complaint";
+
 import type { ComplaintDetail } from "@/types/complaint";
+import { editComplaintSchema, EditComplaintValues } from "@/lib/validations/edit-complaint-field";
 
 interface EditDialogProps {
   complaint: ComplaintDetail;
