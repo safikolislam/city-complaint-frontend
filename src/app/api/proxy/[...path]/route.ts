@@ -4,6 +4,8 @@ import { getAccessToken, getRefreshToken, setSession } from "@/lib/session";
 
 type Context = { params: Promise<{ path: string[] }> };
 
+const BASE_URL = process.env.NEXT_API_URL ?? "http://localhost:5000/api/v1";
+
 function send(
   request: NextRequest,
   path: string[],
@@ -14,7 +16,8 @@ function send(
   if (body) headers["Content-Type"] = "application/json";
   if (token) headers.Authorization = `Bearer ${token}`;
 
-  const url = `${process.env.NEXT_API_URL}/${path.join("/")}`;
+  const url = `${BASE_URL}/${path.join("/")}`;
+  console.log("[proxy] →", request.method, url);
   return fetch(`${url}${request.nextUrl.search}`, {
     method: request.method,
     headers,
