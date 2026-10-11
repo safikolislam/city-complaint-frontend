@@ -9,7 +9,10 @@ import { Button } from "@/components/ui/button";
 import { useEditComplaint } from "@/hooks/use-edit-complaint";
 
 import type { ComplaintDetail } from "@/types/complaint";
-import { editComplaintSchema, EditComplaintValues } from "@/lib/validations/edit-complaint-field";
+import {
+  editComplaintSchema,
+  type EditComplaintValues,
+} from "@/lib/validations/edit-complaint-field";
 
 interface EditDialogProps {
   complaint: ComplaintDetail;

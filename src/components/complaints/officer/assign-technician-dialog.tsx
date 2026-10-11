@@ -75,7 +75,11 @@ export function AssignTechnicianDialog({
             <p className="text-sm text-destructive">
               {technicians.error.message}
             </p>
-            <Button variant="outline" size="sm" onClick={() => technicians.refetch()}>
+            <Button
+              variant="outline"
+              size="sm"
+              onClick={() => technicians.refetch()}
+            >
               Try again
             </Button>
           </div>

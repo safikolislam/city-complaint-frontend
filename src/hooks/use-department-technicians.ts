@@ -16,14 +16,13 @@ export function useDepartmentTechnicians(
   return useQuery({
     queryKey: ["department-technicians", departmentId],
     queryFn: async () => {
-      
       const url = departmentId
         ? `/staff/technicians?departmentId=${departmentId}`
         : `/staff/technicians`;
       const res = await clientApi<Technician[]>(url);
       return res.data;
     },
-   
+
     enabled: Boolean(departmentId) && enabled,
     staleTime: 60_000,
   });
