@@ -1,6 +1,7 @@
 import Link from "next/link";
 import { MobileMenu } from "@/components/layout/mobile-menu";
 import { UserMenu } from "@/components/layout/user-menu";
+import { ThemeToggle } from "@/components/layout/theme-toggle";
 import { buttonVariants } from "@/components/ui/button";
 import { roleHome } from "@/config/routes";
 import { siteConfig } from "@/config/site";
@@ -30,20 +31,15 @@ export async function PublicNavbar() {
         </nav>
 
         <div className="hidden items-center gap-2 md:flex">
+          <ThemeToggle />
           {user && dashboardHref ? (
             <UserMenu user={user} dashboardHref={dashboardHref} />
           ) : (
             <>
-              <Link
-                href="/auth/login"
-                className={buttonVariants({ variant: "ghost", size: "sm" })}
-              >
+              <Link href="/auth/login" className={buttonVariants({ variant: "ghost", size: "sm" })}>
                 Login
               </Link>
-              <Link
-                href="/auth/register"
-                className={buttonVariants({ size: "sm" })}
-              >
+              <Link href="/auth/register" className={buttonVariants({ size: "sm" })}>
                 Register
               </Link>
             </>

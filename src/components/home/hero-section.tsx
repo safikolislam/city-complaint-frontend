@@ -5,7 +5,7 @@ import { buttonVariants } from "@/components/ui/button";
 
 const HeroSection = () => {
   return (
-    <section className="relative isolate overflow-hidden">
+    <section className="relative isolate overflow-hidden min-h-[65vh] flex items-center">
       <Image
         src="/images/city-servicing.jpg"
         alt="A busy city street with buildings and traffic"
@@ -16,22 +16,19 @@ const HeroSection = () => {
       />
       <div className="absolute inset-0 -z-10 bg-black/60" />
 
-      <div className="mx-auto flex max-w-6xl flex-col items-center gap-6 px-4 py-24 text-center text-white md:py-32">
-        <span className="rounded-full border border-white/30 bg-white/10 px-3 py-1 text-xs font-medium backdrop-blur">
+      <div className="mx-auto flex max-w-6xl w-full flex-col items-center gap-6 px-4 py-24 text-center text-white md:py-32 animate-fade-in">
+        <span className="rounded-full border border-white/30 bg-white/10 px-3 py-1 text-xs font-medium backdrop-blur animate-slide-down">
           Smart City · Public Service
         </span>
-        <h1 className="max-w-3xl text-4xl font-bold tracking-tight md:text-5xl">
-          Report city problems. Track them until they are fixed.
+        <h1 className="max-w-3xl text-4xl font-bold tracking-tight md:text-6xl animate-slide-up">
+          Report city problems. <br />
+          <span className="text-primary-foreground/80">Track them until they are fixed.</span>
         </h1>
-        <p className="max-w-2xl text-white/80">
-          Submit a complaint or service request, get it routed to the right
-          department, and follow every step from assignment to resolution.
+        <p className="max-w-2xl text-white/80 text-lg animate-fade-in">
+          Submit a complaint or service request, get it routed to the right department, and follow every step from assignment to resolution.
         </p>
-        <div className="flex flex-wrap justify-center gap-3">
-          <Link
-            href="/auth/register"
-            className={buttonVariants({ size: "lg" })}
-          >
+        <div className="flex flex-wrap justify-center gap-3 animate-fade-in">
+          <Link href="/auth/register" className={buttonVariants({ size: "lg" })}>
             Get started
             <ArrowRight className="ml-2 size-4" />
           </Link>
