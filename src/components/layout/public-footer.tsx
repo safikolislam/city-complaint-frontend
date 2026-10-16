@@ -1,5 +1,6 @@
 import Link from "next/link";
 import { siteConfig } from "@/config/site";
+import { SocialLinks } from "./social-links";
 
 export function PublicFooter() {
   return (
@@ -27,6 +28,7 @@ export function PublicFooter() {
         <div className="text-sm text-muted-foreground">
           <p>Narsingdi, Bangladesh</p>
           <p>support@cityfix.com</p>
+          <SocialLinks />
         </div>
       </div>
       <div className="border-t py-4 text-center text-xs text-muted-foreground">
