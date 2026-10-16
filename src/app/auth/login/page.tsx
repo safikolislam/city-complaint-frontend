@@ -9,6 +9,7 @@ import {
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
+import { GoogleLoginButton } from "../_components/google-Button";
 
 export const metadata: Metadata = {
   title: "Login",
@@ -32,6 +33,7 @@ export default function LoginPage() {
               Create an account
             </Link>
           </p>
+          <GoogleLoginButton></GoogleLoginButton>
         </CardContent>
       </Card>
     </main>
