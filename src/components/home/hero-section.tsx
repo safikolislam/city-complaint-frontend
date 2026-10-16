@@ -1,45 +1,81 @@
-import { ArrowRight } from "lucide-react";
+"use client";
+
+
 import Image from "next/image";
-import Link from "next/link";
-import { buttonVariants } from "@/components/ui/button";
+import { useCallback, useEffect, useState } from "react";
+import HeroContent from "./hero/hero-content";
+import HeroControls from "./hero/hero-controls";
+import { heroSlides } from "./hero/hero-slides";
+import HeroStats, { type HeroStatsData } from "./hero/hero-stats";
 
-const HeroSection = () => {
+const INTERVAL = 6000;
+const total = heroSlides.length;
+const ids = heroSlides.map((s) => s.id);
+
+type Props = { stats?: HeroStatsData };
+
+const HeroSection = ({ stats }: Props) => {
+  const [current, setCurrent] = useState(0);
+  const [paused, setPaused] = useState(false);
+
+  const next = useCallback(() => setCurrent((c) => (c + 1) % total), []);
+  const prev = useCallback(
+    () => setCurrent((c) => (c - 1 + total) % total),
+    [],
+  );
+
+  useEffect(() => {
+    if (paused) return;
+    const timer = setInterval(next, INTERVAL);
+    return () => clearInterval(timer);
+  }, [paused, next]);
+
   return (
-    <section className="relative isolate overflow-hidden min-h-[65vh] flex items-center">
-      <Image
-        src="/images/city-servicing.jpg"
-        alt="A busy city street with buildings and traffic"
-        fill
-        priority
-        sizes="100vw"
-        className="-z-20 object-cover"
-      />
-      <div className="absolute inset-0 -z-10 bg-black/60" />
+    <section
+      aria-roledescription="carousel"
+      aria-label="Featured services"
+      className="relative isolate flex h-[65vh] min-h-[520px] items-center overflow-hidden md:max-h-[70vh]"
+      onMouseEnter={() => setPaused(true)}
+      onMouseLeave={() => setPaused(false)}
+    >
+      {heroSlides.map((s, i) => (
+        <Image
+          key={s.id}
+          src={s.image}
+          alt={s.alt}
+          fill
+          priority={i === 0}
+          sizes="100vw"
+          className={`-z-20 object-cover transition-opacity duration-1000 ${
+            i === current ? "opacity-100" : "opacity-0"
+          }`}
+        />
+      ))}
+      <div className="absolute inset-0 -z-10 bg-gradient-to-b from-black/70 via-black/55 to-black/80" />
 
-      <div className="mx-auto flex max-w-6xl w-full flex-col items-center gap-6 px-4 py-24 text-center text-white md:py-32 animate-fade-in">
-        <span className="rounded-full border border-white/30 bg-white/10 px-3 py-1 text-xs font-medium backdrop-blur animate-slide-down">
-          Smart City · Public Service
-        </span>
-        <h1 className="max-w-3xl text-4xl font-bold tracking-tight md:text-6xl animate-slide-up">
-          Report city problems. <br />
-          <span className="text-primary-foreground/80">Track them until they are fixed.</span>
-        </h1>
-        <p className="max-w-2xl text-white/80 text-lg animate-fade-in">
-          Submit a complaint or service request, get it routed to the right department, and follow every step from assignment to resolution.
-        </p>
-        <div className="flex flex-wrap justify-center gap-3 animate-fade-in">
-          <Link href="/auth/register" className={buttonVariants({ size: "lg" })}>
-            Get started
-            <ArrowRight className="ml-2 size-4" />
-          </Link>
-          <Link
-            href="/services"
-            className={`${buttonVariants({ variant: "outline", size: "lg" })} border-white/40 bg-transparent text-white hover:bg-white/10 hover:text-white`}
-          >
-            Explore services
-          </Link>
-        </div>
+      <div className="mx-auto flex w-full max-w-6xl flex-col items-center gap-5 px-4 text-center text-white">
+        <HeroContent key={heroSlides[current].id} slide={heroSlides[current]} />
+        <HeroControls
+          ids={ids}
+          current={current}
+          onSelect={setCurrent}
+          onPrev={prev}
+          onNext={next}
+        />
+        {stats && (
+          <div className="hidden md:block">
+            <HeroStats stats={stats} />
+          </div>
+        )}
       </div>
+
+      <a
+        href="#services"
+        aria-label="Scroll to next section"
+        className="absolute bottom-3 left-1/2 -translate-x-1/2 text-white/80 animate-bounce"
+      >
+        {/* <ChevronDown className="size-6" /> */}
+      </a>
     </section>
   );
 };
