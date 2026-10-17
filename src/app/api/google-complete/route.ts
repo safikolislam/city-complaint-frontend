@@ -19,7 +19,11 @@ const NEXT_AUTH_COOKIES = [
 ];
 
 export async function GET(req: NextRequest) {
-  const loginUrl = new URL("/auth/login", req.url);
+  const fail = (reason: string) => {
+    const url = new URL("/auth/login", req.url);
+    url.searchParams.set("google_error", reason);
+    return NextResponse.redirect(url);
+  };
 
   try {
     const token = await getToken({
@@ -28,7 +32,8 @@ export async function GET(req: NextRequest) {
     });
 
     if (typeof token?.idToken !== "string") {
-      return NextResponse.redirect(loginUrl);
+      console.error("google-complete: idToken missing");
+      return fail("no-id-token");
     }
 
     const { json, headers } = await apiRaw<LoginData>("/auth/google", {
@@ -39,7 +44,8 @@ export async function GET(req: NextRequest) {
     const refreshToken = readRefreshCookie(headers);
 
     if (!refreshToken) {
-      return NextResponse.redirect(loginUrl);
+      console.error("google-complete: refresh cookie missing");
+      return fail("no-refresh-cookie");
     }
 
     await setSession(json.data.accessToken, refreshToken);
@@ -51,7 +57,8 @@ export async function GET(req: NextRequest) {
     NEXT_AUTH_COOKIES.forEach((name) => response.cookies.delete(name));
 
     return response;
-  } catch {
-    return NextResponse.redirect(loginUrl);
+  } catch (error) {
+    console.error("google-complete: backend call failed", error);
+    return fail("backend-error");
   }
 }
