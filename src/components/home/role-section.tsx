@@ -1,159 +1,162 @@
 "use client";
 
-import { useEffect, useRef } from "react";
-import type { LucideIcon } from "lucide-react";
-import { Check, ShieldCheck, UserRound, Wrench } from "lucide-react";
+import { useEffect, useRef, useState } from "react";
+import {
+  AnimatePresence,
+  MotionConfig,
+  animate,
+  motion,
+  useInView,
+  useMotionValue,
+  useReducedMotion,
+} from "framer-motion";
+import { Check } from "lucide-react";
 import { SectionHeading } from "@/components/home/section-heading";
+
 import { cn } from "@/lib/utils";
+import { ROLES } from "@/data/role";
 
-interface RoleInfo {
-  title: string;
-  icon: LucideIcon;
-  points: string[];
-  accent: string;
-  glow: string;
-  bar: string;
-}
+const DURATION = 5;
 
-const ROLES: RoleInfo[] = [
-  {
-    title: "Citizens",
-    icon: UserRound,
-    accent: "text-blue-500",
-    glow: "from-blue-500/10",
-    bar: "bg-blue-500",
-    points: [
-      "Report problems with location details",
-      "Follow progress on a timeline",
-      "Pay for paid services with bKash",
-      "Edit or cancel a request while it is pending",
-    ],
-  },
-  {
-    title: "Department staff",
-    icon: Wrench,
-    accent: "text-violet-500",
-    glow: "from-violet-500/10",
-    bar: "bg-violet-500",
-    points: [
-      "Officers review department complaints",
-      "Officers assign work to technicians",
-      "Technicians see their assigned tasks",
-      "Technicians start work and mark it resolved",
-    ],
-  },
-  {
-    title: "City admins",
-    icon: ShieldCheck,
-    accent: "text-cyan-500",
-    glow: "from-cyan-500/10",
-    bar: "bg-cyan-500",
-    points: [
-      "See city-wide numbers and charts",
-      "Manage users and staff roles",
-      "Assign complaints to staff",
-      "Review the audit log",
-    ],
-  },
-];
+const list = {
+  hidden: {},
+  show: { transition: { staggerChildren: 0.08, delayChildren: 0.15 } },
+};
+
+const item = {
+  hidden: { opacity: 0, x: -14 },
+  show: { opacity: 1, x: 0, transition: { duration: 0.35 } },
+};
 
 export function RolesSection() {
-  const cardRefs = useRef<(HTMLDivElement | null)[]>([]);
+  const [active, setActive] = useState(0);
+  const [hovered, setHovered] = useState(false);
+  const ref = useRef<HTMLDivElement>(null);
+  const inView = useInView(ref, { amount: 0.3 });
+  const reduce = useReducedMotion();
+  const progress = useMotionValue(0);
+  const paused = hovered || !inView || !!reduce;
 
   useEffect(() => {
-    const observers: IntersectionObserver[] = [];
-    cardRefs.current.forEach((card, i) => {
-      if (!card) return;
-      const obs = new IntersectionObserver(
-        ([entry]) => {
-          if (entry.isIntersecting) {
-            setTimeout(() => {
-              card.classList.remove("opacity-0", "translate-y-8");
-              card.classList.add("opacity-100", "translate-y-0");
-            }, i * 110);
-            obs.unobserve(card);
-          }
-        },
-        { threshold: 0.15 }
-      );
-      obs.observe(card);
-      observers.push(obs);
+    if (paused) return;
+    const controls = animate(progress, 1, {
+      duration: DURATION * (1 - progress.get()),
+      ease: "linear",
+      onComplete: () => {
+        progress.set(0);
+        setActive((a) => (a + 1) % ROLES.length);
+      },
     });
-    return () => observers.forEach((o) => o.disconnect());
-  }, []);
+    return () => controls.stop();
+  }, [active, paused, progress]);
+
+  const select = (i: number) => {
+    if (i === active) return;
+    progress.set(0);
+    setActive(i);
+  };
+
+  const role = ROLES[active];
+  const Icon = role.icon;
 
   return (
-    <section className="bg-muted/40 px-4 py-16 sm:py-20">
-      <div className="mx-auto max-w-6xl">
-        {/* Eyebrow */}
-        <div className="mb-4 flex justify-center">
-          <span className="inline-flex items-center gap-2 rounded-full border border-blue-500/25 bg-blue-500/10 px-4 py-1.5 text-xs font-semibold uppercase tracking-widest text-blue-500">
-            <span className="size-1.5 animate-pulse rounded-full bg-blue-500" />
-            Roles & Access
-          </span>
-        </div>
+    <MotionConfig reducedMotion="user">
+      <section className="bg-muted/40 px-4 py-16 sm:py-20">
+        <div className="mx-auto max-w-6xl">
+          <div className="mb-4 flex justify-center">
+            <span className="inline-flex items-center gap-2 rounded-full border border-blue-500/25 bg-blue-500/10 px-4 py-1.5 text-xs font-semibold uppercase tracking-widest text-blue-500">
+              <span className="size-1.5 animate-pulse rounded-full bg-blue-500" />
+              Roles & Access
+            </span>
+          </div>
 
-        <SectionHeading
-          title="Built for everyone involved"
-          description="Each role gets its own dashboard with only the tools it needs."
-        />
+          <SectionHeading
+            title="Built for everyone involved"
+            description="Each role gets its own dashboard with only the tools it needs."
+          />
 
-        <div className="grid gap-5 md:grid-cols-3">
-          {ROLES.map(({ title, icon: Icon, points, accent, glow, bar }, i) => (
-            <div
-              key={title}
-              ref={(el) => { cardRefs.current[i] = el; }}
-              className={cn(
-                "group relative overflow-hidden rounded-2xl border bg-card p-7 shadow-sm",
-                "opacity-0 translate-y-8",
-                "transition-all duration-500 ease-out",
-                "hover:-translate-y-1.5 hover:shadow-xl"
-              )}
-            >
-              {/* Top accent bar */}
-              <div
-                className={cn(
-                  "absolute inset-x-0 top-0 h-0.5 origin-left scale-x-0 rounded-full transition-transform duration-500 group-hover:scale-x-100",
-                  bar
-                )}
-              />
-
-              {/* Glow blob */}
-              <div
-                className={cn(
-                  "pointer-events-none absolute -right-10 -top-10 size-40 rounded-full bg-gradient-radial opacity-0 transition-opacity duration-300 group-hover:opacity-100",
-                  glow,
-                  "to-transparent"
-                )}
-              />
-
-              {/* Icon */}
-              <div
-                className={cn(
-                  "mb-5 flex size-14 items-center justify-center rounded-xl border transition-transform duration-300 group-hover:-rotate-6 group-hover:scale-110",
-                  `border-current/20 bg-current/10`,
-                  accent
-                )}
-              >
-                <Icon className={cn("size-6", accent)} aria-hidden="true" />
-              </div>
-
-              <h3 className="mb-4 font-semibold text-lg tracking-tight">{title}</h3>
-
-              <ul className="space-y-2.5 text-sm">
-                {points.map((point) => (
-                  <li key={point} className="flex items-start gap-2.5">
-                    <span className="mt-0.5 flex size-[18px] shrink-0 items-center justify-center rounded-full bg-emerald-500/15">
-                      <Check className="size-2.5 text-emerald-500" aria-hidden="true" />
-                    </span>
-                    <span className="text-muted-foreground">{point}</span>
-                  </li>
-                ))}
-              </ul>
+          <div
+            ref={ref}
+            onMouseEnter={() => setHovered(true)}
+            onMouseLeave={() => setHovered(false)}
+            className="grid gap-8 md:grid-cols-[260px_1fr] md:gap-12"
+          >
+            <div role="tablist" className="flex gap-2 overflow-x-auto md:flex-col">
+              {ROLES.map((r, i) => (
+                <button
+                  key={r.title}
+                  type="button"
+                  role="tab"
+                  aria-selected={i === active}
+                  onClick={() => select(i)}
+                  className={cn(
+                    "relative flex shrink-0 items-center gap-3 rounded-lg px-4 py-3 text-sm font-medium transition-colors",
+                    i === active ? "text-foreground" : "text-muted-foreground hover:text-foreground",
+                  )}
+                >
+                  {i === active && (
+                    <motion.span
+                      layoutId="role-tab"
+                      transition={{ type: "spring", stiffness: 380, damping: 32 }}
+                      className="absolute inset-0 overflow-hidden rounded-lg border bg-background shadow-sm"
+                    >
+                      <motion.span
+                        style={{ scaleX: progress }}
+                        className={cn("absolute inset-x-0 bottom-0 h-0.5 origin-left", r.bar)}
+                      />
+                    </motion.span>
+                  )}
+                  <r.icon className={cn("relative size-5", r.accent)} aria-hidden="true" />
+                  <span className="relative">{r.title}</span>
+                </button>
+              ))}
             </div>
-          ))}
+
+            <AnimatePresence mode="wait">
+              <motion.div
+                key={role.title}
+                role="tabpanel"
+                initial={{ opacity: 0, y: 18 }}
+                animate={{ opacity: 1, y: 0 }}
+                exit={{ opacity: 0, y: -12 }}
+                transition={{ duration: 0.25 }}
+              >
+                <div className="mb-6 flex items-center gap-4">
+                  <motion.div
+                    initial={{ scale: 0.6, rotate: -12 }}
+                    animate={{ scale: 1, rotate: 0, y: [0, -5, 0] }}
+                    transition={{
+                      scale: { type: "spring", stiffness: 300, damping: 16 },
+                      rotate: { type: "spring", stiffness: 300, damping: 16 },
+                      y: { duration: 3, repeat: Infinity, ease: "easeInOut" },
+                    }}
+                    className={cn("flex size-14 items-center justify-center rounded-xl", role.soft)}
+                  >
+                    <Icon className={cn("size-6", role.accent)} aria-hidden="true" />
+                  </motion.div>
+                  <h3 className="text-2xl font-semibold tracking-tight">{role.title}</h3>
+                </div>
+
+                <motion.ul
+                  variants={list}
+                  initial="hidden"
+                  animate="show"
+                  className="grid gap-x-8 gap-y-4 border-t pt-6 text-sm sm:grid-cols-2"
+                >
+                  {role.points.map((point) => (
+                    <motion.li key={point} variants={item} className="flex items-start gap-3">
+                      <span className="mt-0.5 flex size-[18px] shrink-0 items-center justify-center rounded-full bg-emerald-500/15">
+                        <Check className="size-2.5 text-emerald-500" aria-hidden="true" />
+                      </span>
+                      <span className="text-muted-foreground">{point}</span>
+                    </motion.li>
+                  ))}
+                </motion.ul>
+              </motion.div>
+            </AnimatePresence>
+          </div>
         </div>
-      </div>
-    </section>
+      </section>
+    </MotionConfig>
   );
 }
