@@ -6,6 +6,7 @@ import { FaqPreview } from "@/components/home/faq-preview";
 import HeroSection from "@/components/home/hero-section";
 
 import { RolesSection } from "@/components/home/role-section";
+import { StatsSection } from "@/components/home/stats-section";
 
 export const metadata: Metadata = {
   title: "Home",
@@ -18,6 +19,7 @@ export default function HomePage() {
     <>
       <HeroSection />
        <RolesSection />
+       <StatsSection></StatsSection>
       <FaqPreview />
       <CtaSection />
     </>
