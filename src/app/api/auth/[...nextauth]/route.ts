@@ -9,7 +9,15 @@ const handler = NextAuth({
     }),
   ],
   pages: {
-    signIn: "/login",
+    signIn: "/auth/login",
+  },
+  callbacks: {
+    async jwt({ token, account }) {
+      if (account?.id_token) {
+        token.idToken = account.id_token;
+      }
+      return token;
+    },
   },
 });
 
