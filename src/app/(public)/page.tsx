@@ -10,6 +10,7 @@ import { StatsSection } from "@/components/home/stats-section";
 
 import { CategoriesSection } from "@/components/home/categories-section";
 import { HowItWorksSection } from "@/components/home/how-it-works";
+import { HighlightsSection } from "@/components/home/highlights-section";
 
 
 export const metadata: Metadata = {
@@ -25,6 +26,7 @@ export default function HomePage() {
        <RolesSection />
        <HowItWorksSection></HowItWorksSection>
        <CategoriesSection></CategoriesSection>
+       <HighlightsSection></HighlightsSection>
        <StatsSection></StatsSection>
       <FaqPreview />
       <CtaSection />
