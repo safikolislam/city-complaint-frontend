@@ -3,7 +3,7 @@
 import { useQuery } from "@tanstack/react-query";
 import type { PublicStats } from "@/types/public-stats";
 
-const base = (process.env.NEXT_PUBLIC_API_URL ?? "").replace(/\/$/, "");
+const base = (process.env.NEXT_API_URL ?? "").replace(/\/$/, "");
 const apiRoot = base.endsWith("/api/v1") ? base : `${base}/api/v1`;
 
 async function fetchPublicStats(): Promise<PublicStats> {
