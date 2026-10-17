@@ -1,153 +1,217 @@
 "use client";
 
 import { useEffect, useRef, useState } from "react";
-import { 
-  Construction, 
-  Droplet, 
-  Zap, 
-  Trash2, 
-  Lightbulb, 
-  Waves, 
-  Trees, 
-  CircleHelp 
+import { motion, useInView, AnimatePresence } from "framer-motion";
+import {
+  Construction, Droplet, Zap, Trash2,
+  Lightbulb, Waves, Trees, CircleHelp,
+  type LucideIcon,
 } from "lucide-react";
 
-const categories = [
-  {
-    label: "Road & Potholes",
-    icon: <Construction className="w-5 h-5" />,
-    count: "2.4k reports",
-    color: "orange" as const,
-  },
-  {
-    label: "Water Supply",
-    icon: <Droplet className="w-5 h-5" />,
-    count: "1.8k reports",
-    color: "blue" as const,
-  },
-  {
-    label: "Electricity",
-    icon: <Zap className="w-5 h-5" />,
-    count: "1.2k reports",
-    color: "yellow" as const,
-  },
-  {
-    label: "Garbage",
-    icon: <Trash2 className="w-5 h-5" />,
-    count: "980 reports",
-    color: "green" as const,
-  },
-  {
-    label: "Street Lights",
-    icon: <Lightbulb className="w-5 h-5" />,
-    count: "760 reports",
-    color: "amber" as const,
-  },
-  {
-    label: "Drainage",
-    icon: <Waves className="w-5 h-5" />,
-    count: "640 reports",
-    color: "teal" as const,
-  },
-  {
-    label: "Parks & Trees",
-    icon: <Trees className="w-5 h-5" />,
-    count: "420 reports",
-    color: "emerald" as const,
-  },
-  {
-    label: "Others",
-    icon: <CircleHelp className="w-5 h-5" />,
-    count: "310 reports",
-    color: "slate" as const,
-  },
+type CatColor =
+  | "orange" | "blue" | "yellow" | "green"
+  | "amber"  | "teal"  | "emerald" | "slate";
+
+interface CategoryConfig {
+  label: string;
+  key: string;
+  Icon: LucideIcon;
+  color: CatColor;
+}
+
+const CATEGORY_CONFIG: CategoryConfig[] = [
+  { label: "Road & Potholes", key: "ROAD",         Icon: Construction, color: "orange"  },
+  { label: "Water Supply",    key: "WATER",        Icon: Droplet,      color: "blue"    },
+  { label: "Electricity",     key: "ELECTRICITY",  Icon: Zap,          color: "yellow"  },
+  { label: "Garbage",         key: "GARBAGE",      Icon: Trash2,       color: "green"   },
+  { label: "Street Lights",   key: "STREET_LIGHT", Icon: Lightbulb,    color: "amber"   },
+  { label: "Drainage",        key: "DRAINAGE",     Icon: Waves,        color: "teal"    },
+  { label: "Parks & Trees",   key: "PARK",         Icon: Trees,        color: "emerald" },
+  { label: "Others",          key: "OTHER",        Icon: CircleHelp,   color: "slate"   },
 ];
 
-type CatColor = "orange" | "blue" | "yellow" | "green" | "amber" | "teal" | "emerald" | "slate";
+const colorMap: Record<CatColor, {
+  pill: string;
+  pillHover: string;
+  activePill: string;
+  iconColor: string;
+}> = {
+  orange:  { pill: "bg-orange-50 dark:bg-orange-950/20 text-orange-700 dark:text-orange-300 border-orange-200 dark:border-orange-800/40",  pillHover: "hover:bg-orange-100 dark:hover:bg-orange-900/30", activePill: "bg-orange-500 text-white border-orange-500",  iconColor: "text-orange-500 dark:text-orange-400" },
+  blue:    { pill: "bg-blue-50 dark:bg-blue-950/20 text-blue-700 dark:text-blue-300 border-blue-200 dark:border-blue-800/40",              pillHover: "hover:bg-blue-100 dark:hover:bg-blue-900/30",   activePill: "bg-blue-500 text-white border-blue-500",      iconColor: "text-blue-500 dark:text-blue-400"   },
+  yellow:  { pill: "bg-yellow-50 dark:bg-yellow-950/20 text-yellow-700 dark:text-yellow-300 border-yellow-200 dark:border-yellow-800/40",  pillHover: "hover:bg-yellow-100 dark:hover:bg-yellow-900/30",activePill: "bg-yellow-500 text-white border-yellow-500",  iconColor: "text-yellow-500 dark:text-yellow-400"},
+  green:   { pill: "bg-green-50 dark:bg-green-950/20 text-green-700 dark:text-green-300 border-green-200 dark:border-green-800/40",        pillHover: "hover:bg-green-100 dark:hover:bg-green-900/30",  activePill: "bg-green-500 text-white border-green-500",    iconColor: "text-green-500 dark:text-green-400" },
+  amber:   { pill: "bg-amber-50 dark:bg-amber-950/20 text-amber-700 dark:text-amber-300 border-amber-200 dark:border-amber-800/40",        pillHover: "hover:bg-amber-100 dark:hover:bg-amber-900/30",  activePill: "bg-amber-500 text-white border-amber-500",    iconColor: "text-amber-500 dark:text-amber-400" },
+  teal:    { pill: "bg-teal-50 dark:bg-teal-950/20 text-teal-700 dark:text-teal-300 border-teal-200 dark:border-teal-800/40",              pillHover: "hover:bg-teal-100 dark:hover:bg-teal-900/30",    activePill: "bg-teal-500 text-white border-teal-500",      iconColor: "text-teal-500 dark:text-teal-400"   },
+  emerald: { pill: "bg-emerald-50 dark:bg-emerald-950/20 text-emerald-700 dark:text-emerald-300 border-emerald-200 dark:border-emerald-800/40", pillHover: "hover:bg-emerald-100 dark:hover:bg-emerald-900/30", activePill: "bg-emerald-500 text-white border-emerald-500", iconColor: "text-emerald-500 dark:text-emerald-400" },
+  slate:   { pill: "bg-slate-100 dark:bg-slate-800/30 text-slate-600 dark:text-slate-300 border-slate-200 dark:border-slate-700/40",       pillHover: "hover:bg-slate-200 dark:hover:bg-slate-700/30",  activePill: "bg-slate-500 text-white border-slate-500",    iconColor: "text-slate-500 dark:text-slate-400" },
+};
 
-const colorMap: Record<CatColor, { bg: string; icon: string; ring: string; dot: string }> = {
-  orange:  { bg: "bg-orange-50 dark:bg-orange-950/20",  icon: "text-orange-500 dark:text-orange-400",  ring: "hover:ring-orange-300 dark:hover:ring-orange-700/50",  dot: "bg-orange-400" },
-  blue:    { bg: "bg-blue-50 dark:bg-blue-950/20",       icon: "text-blue-500 dark:text-blue-400",       ring: "hover:ring-blue-300 dark:hover:ring-blue-700/50",      dot: "bg-blue-400" },
-  yellow:  { bg: "bg-yellow-50 dark:bg-yellow-950/20",  icon: "text-yellow-600 dark:text-yellow-400",  ring: "hover:ring-yellow-300 dark:hover:ring-yellow-700/50",  dot: "bg-yellow-400" },
-  green:   { bg: "bg-green-50 dark:bg-green-950/20",    icon: "text-green-600 dark:text-green-400",    ring: "hover:ring-green-300 dark:hover:ring-green-700/50",    dot: "bg-green-400" },
-  amber:   { bg: "bg-amber-50 dark:bg-amber-950/20",    icon: "text-amber-600 dark:text-amber-400",    ring: "hover:ring-amber-300 dark:hover:ring-amber-700/50",    dot: "bg-amber-400" },
-  teal:    { bg: "bg-teal-50 dark:bg-teal-950/20",      icon: "text-teal-600 dark:text-teal-400",      ring: "hover:ring-teal-300 dark:hover:ring-teal-700/50",      dot: "bg-teal-400" },
-  emerald: { bg: "bg-emerald-50 dark:bg-emerald-950/20",icon: "text-emerald-600 dark:text-emerald-400",ring: "hover:ring-emerald-300 dark:hover:ring-emerald-700/50",dot: "bg-emerald-400" },
-  slate:   { bg: "bg-slate-100 dark:bg-slate-800/30",   icon: "text-slate-500 dark:text-slate-400",    ring: "hover:ring-slate-300 dark:hover:ring-slate-600/50",    dot: "bg-slate-400" },
+interface CategoryStat { category: string; count: number; }
+
+function formatCount(n: number): string {
+  if (n >= 1000) return `${(n / 1000).toFixed(1)}k`;
+  return `${n}`;
+}
+
+const containerVariants = {
+  hidden: {},
+  visible: { transition: { staggerChildren: 0.06 } },
+};
+
+const pillVariants = {
+  hidden: { opacity: 0, y: 12 },
+  visible: {
+    opacity: 1,
+    y: 0,
+    transition: {
+      duration: 0.4,
+      ease: [0.34, 1.56, 0.64, 1] as [number, number, number, number],
+    },
+  },
 };
 
 export function CategoriesSection() {
-  const sectionRef = useRef<HTMLElement>(null);
-  const [visible, setVisible] = useState(false);
+  const ref = useRef(null);
+  const isInView = useInView(ref, { once: true, margin: "-60px" });
+  const [counts, setCounts] = useState<Record<string, number>>({});
+  const [loading, setLoading] = useState(true);
+  const [hovered, setHovered] = useState<string | null>(null);
 
   useEffect(() => {
-    const el = sectionRef.current;
-    if (!el) return;
-    const observer = new IntersectionObserver(
-      ([entry]) => {
-        if (entry.isIntersecting) {
-          setVisible(true);
-          observer.disconnect();
-        }
-      },
-      { threshold: 0.1 }
-    );
-    observer.observe(el);
-    return () => observer.disconnect();
+    async function fetchCounts() {
+      try {
+        const res = await fetch("/api/proxy/public/stats/categories");
+        if (!res.ok) return;
+        const json = (await res.json()) as { data: CategoryStat[] };
+        const map: Record<string, number> = {};
+        json.data.forEach((item) => { map[item.category] = item.count; });
+        setCounts(map);
+      } catch { /* fallback */ }
+      finally { setLoading(false); }
+    }
+    void fetchCounts();
   }, []);
 
+  const sorted = [...CATEGORY_CONFIG].sort(
+    (a, b) => (counts[b.key] ?? 0) - (counts[a.key] ?? 0)
+  );
+
+  const maxCount = Math.max(...CATEGORY_CONFIG.map((cat) => counts[cat.key] ?? 0), 1);
+
   return (
-    <section ref={sectionRef} className="py-20 md:py-28 bg-gray-50 dark:bg-gray-900/50">
-      <div className="max-w-5xl mx-auto px-4 sm:px-6">
+    <section className="py-20 md:py-28 bg-gray-50 dark:bg-gray-900/50 overflow-hidden">
+      <div className="max-w-4xl mx-auto px-4 sm:px-6">
+
         {/* Header */}
-        <div className="text-center mb-14">
-          <span className="inline-flex items-center gap-1.5 text-xs font-semibold tracking-widest uppercase text-violet-600 dark:text-violet-400 bg-violet-50 dark:bg-violet-950/40 border border-violet-200 dark:border-violet-800/60 px-3.5 py-1.5 rounded-full mb-4">
-            <span className="w-1.5 h-1.5 rounded-full bg-violet-500 animate-pulse" />
+        <motion.div
+          className="text-center mb-14"
+          initial={{ opacity: 0, y: 20 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          viewport={{ once: true }}
+          transition={{ duration: 0.6, ease: [0.22, 1, 0.36, 1] as [number, number, number, number] }}
+        >
+          <span className="inline-flex items-center gap-1.5 text-xs font-semibold tracking-widest uppercase text-violet-600 dark:text-violet-400 bg-violet-50 dark:bg-violet-950/40 border border-violet-200 dark:border-violet-800/60 px-3.5 py-1.5 rounded-full mb-5">
+            <motion.span
+              className="w-1.5 h-1.5 rounded-full bg-violet-500"
+              animate={{ scale: [1, 1.6, 1], opacity: [1, 0.3, 1] }}
+              transition={{ duration: 2, repeat: Infinity }}
+            />
             Categories
           </span>
-          <h2 className="text-3xl md:text-4xl font-extrabold text-gray-900 dark:text-white tracking-tight mb-4">
+          <h2 className="text-3xl md:text-4xl font-extrabold text-gray-900 dark:text-white tracking-tight mb-3">
             What can you report?
           </h2>
           <p className="text-gray-500 dark:text-gray-400 text-base max-w-md mx-auto leading-relaxed">
-            Anything that affects your daily city life — roads to parks, power to pipes.
+            Anything that affects your daily city life. Tap a category to report.
           </p>
-        </div>
+        </motion.div>
 
-        {/* Grid */}
-        <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-3 md:gap-4">
-          {categories.map((cat, i) => {
+        {/* Pill cloud */}
+        <motion.div
+          ref={ref}
+          className="flex flex-wrap justify-center gap-3"
+          variants={containerVariants}
+          initial="hidden"
+          animate={isInView ? "visible" : "hidden"}
+        >
+          {sorted.map((cat) => {
             const c = colorMap[cat.color];
-            return (
-              <div
-                key={cat.label}
-                className={[
-                  "flex flex-col items-center text-center gap-3 rounded-2xl p-5 cursor-default",
-                  "ring-2 ring-transparent transition-all duration-300",
-                  "hover:-translate-y-1",
-                  c.bg,
-                  c.ring,
-                  visible ? "opacity-100 translate-y-0" : "opacity-0 translate-y-6",
-                ].join(" ")}
-                style={{ transitionDelay: visible ? `${i * 55}ms` : "0ms" }}
-              >
-                {/* Icon */}
-                <div className={`w-12 h-12 flex items-center justify-center rounded-xl bg-white dark:bg-gray-900 shadow-sm transition-transform duration-300 hover:scale-110 ${c.icon}`}>
-                  {cat.icon}
-                </div>
+            const count = counts[cat.key] ?? 0;
+            const isHovered = hovered === cat.key;
+            const pillScale = count > 0 ? 1 + (count / maxCount) * 0.18 : 1;
 
-                <div>
-                  <p className="text-sm font-semibold text-gray-800 dark:text-gray-100 leading-tight">
-                    {cat.label}
-                  </p>
-                  <p className="text-xs text-gray-400 dark:text-gray-500 mt-0.5 flex items-center justify-center gap-1">
-                    <span className={`w-1.5 h-1.5 rounded-full ${c.dot}`} />
-                    {cat.count}
-                  </p>
-                </div>
-              </div>
+            return (
+              <motion.div
+                key={cat.key}
+                variants={pillVariants}
+                animate={{ scale: pillScale }}
+                whileHover={{ scale: pillScale * 1.08, y: -4 }}
+                whileTap={{ scale: pillScale * 0.96 }}
+                onHoverStart={() => setHovered(cat.key)}
+                onHoverEnd={() => setHovered(null)}
+                className={[
+                  "relative flex items-center gap-2.5 border rounded-full cursor-pointer",
+                  "transition-colors duration-300 select-none shadow-sm hover:shadow-md",
+                  isHovered ? c.activePill : `${c.pill} ${c.pillHover}`,
+                  count > maxCount * 0.6
+                    ? "px-5 py-2.5 text-sm font-semibold"
+                    : "px-4 py-2 text-sm font-medium",
+                ].join(" ")}
+              >
+                <motion.span
+                  animate={isHovered ? { rotate: [0, -10, 10, 0] } : { rotate: 0 }}
+                  transition={{ duration: 0.4 }}
+                  className={isHovered ? "text-white" : c.iconColor}
+                >
+                  <cat.Icon className="w-4 h-4" />
+                </motion.span>
+
+                <span>{cat.label}</span>
+
+                <AnimatePresence>
+                  {!loading && count > 0 && (
+                    <motion.span
+                      key="count"
+                      initial={{ opacity: 0, scale: 0.6 }}
+                      animate={{ opacity: 1, scale: 1 }}
+                      exit={{ opacity: 0, scale: 0.6 }}
+                      className={[
+                        "text-xs font-bold px-1.5 py-0.5 rounded-full min-w-[22px] text-center",
+                        isHovered
+                          ? "bg-white/20 text-white"
+                          : "bg-white dark:bg-gray-900 text-gray-500 dark:text-gray-400 shadow-sm",
+                      ].join(" ")}
+                    >
+                      {formatCount(count)}
+                    </motion.span>
+                  )}
+                  {loading && (
+                    <motion.span
+                      key="skeleton"
+                      animate={{ opacity: [0.3, 1, 0.3] }}
+                      transition={{ duration: 1, repeat: Infinity }}
+                      className="w-8 h-4 rounded-full bg-gray-200 dark:bg-gray-700"
+                    />
+                  )}
+                </AnimatePresence>
+              </motion.div>
             );
           })}
-        </div>
+        </motion.div>
+
+        {/* Total */}
+        <AnimatePresence>
+          {!loading && (
+            <motion.p
+              initial={{ opacity: 0, y: 8 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ delay: 0.6 }}
+              className="text-center text-sm text-gray-400 dark:text-gray-500 mt-10"
+            >
+              {formatCount(Object.values(counts).reduce((a, b) => a + b, 0))}+ total complaints reported across all categories
+            </motion.p>
+          )}
+        </AnimatePresence>
       </div>
     </section>
   );
