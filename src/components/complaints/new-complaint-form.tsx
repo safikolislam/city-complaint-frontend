@@ -2,50 +2,37 @@
 
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
+import { AiSuggestCard } from "@/components/complaints/ai-suggest-card";
 import { CategoryField } from "@/components/complaints/category-field";
+import { PriorityField } from "@/components/complaints/priority-field";
 import { FieldShell, nativeFieldClass } from "@/components/shared/field-shell";
 import { FormField } from "@/components/shared/form-field";
 import { Button } from "@/components/ui/button";
+import { useCategories } from "@/hooks/use-categories";
 import { useCreateComplaint } from "@/hooks/use-create-complaint";
-import { titleOf } from "@/lib/format";
-
 import {
   type CreateComplaintValues,
+  createComplaintDefaults,
   createComplaintSchema,
 } from "@/lib/validations/create-complaint";
-import { PRIORITIES } from "@/lib/validations/complaint";
 
 export function NewComplaintForm() {
   const mutation = useCreateComplaint();
+  const categories = useCategories();
   const {
     register,
     handleSubmit,
+    setValue,
     watch,
     formState: { errors },
   } = useForm<CreateComplaintValues>({
     resolver: zodResolver(createComplaintSchema),
-    defaultValues: {
-      title: "",
-      description: "",
-      address: "",
-      categoryId: "",
-      priority: "MEDIUM",
-      latitude: "",
-      longitude: "",
-    },
+    defaultValues: createComplaintDefaults,
   });
-
-  const onSubmit = (values: CreateComplaintValues) => {
-    mutation.mutate(values);
-  };
-
-  const onError = (formErrors: any) => {
-    console.log("Validation Errors:", formErrors);
-  };
 
   return (
     <form
-      onSubmit={handleSubmit(onSubmit, onError)}
+      onSubmit={handleSubmit((values) => mutation.mutate(values))}
       className="space-y-4"
       noValidate
     >
@@ -54,34 +41,6 @@ export function NewComplaintForm() {
         label="Title"
         error={errors.title?.message}
         {...register("title")}
-      />
-      <CategoryField
-        registration={register("categoryId")}
-        selectedId={watch("categoryId")}
-        error={errors.categoryId?.message}
-      />
-      <FieldShell
-        id="priority"
-        label="Priority"
-        error={errors.priority?.message}
-      >
-        <select
-          id="priority"
-          className={nativeFieldClass}
-          {...register("priority")}
-        >
-          {PRIORITIES.map((p) => (
-            <option key={p} value={p}>
-              {titleOf(p)}
-            </option>
-          ))}
-        </select>
-      </FieldShell>
-      <FormField
-        id="address"
-        label="Address"
-        error={errors.address?.message}
-        {...register("address")}
       />
       <FieldShell
         id="description"
@@ -95,6 +54,33 @@ export function NewComplaintForm() {
           {...register("description")}
         />
       </FieldShell>
+      <AiSuggestCard
+        title={watch("title")}
+        description={watch("description")}
+        categories={categories.data ?? []}
+        onApply={(r) => {
+          setValue("categoryId", r.categoryId, {
+            shouldValidate: true,
+            shouldDirty: true,
+          });
+          setValue("priority", r.priority, { shouldDirty: true });
+        }}
+      />
+      <CategoryField
+        registration={register("categoryId")}
+        selectedId={watch("categoryId")}
+        error={errors.categoryId?.message}
+      />
+      <PriorityField
+        registration={register("priority")}
+        error={errors.priority?.message}
+      />
+      <FormField
+        id="address"
+        label="Address"
+        error={errors.address?.message}
+        {...register("address")}
+      />
       <Button type="submit" disabled={mutation.isPending}>
         {mutation.isPending ? "Submitting..." : "Submit complaint"}
       </Button>

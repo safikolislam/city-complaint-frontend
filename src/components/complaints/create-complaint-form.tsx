@@ -4,6 +4,7 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { Loader2, Send } from "lucide-react";
 import { useRouter } from "next/navigation";
 import { useForm } from "react-hook-form";
+
 import { CategorySelect } from "@/components/complaints/category-select";
 import { ComplaintDetailFields } from "@/components/complaints/complaint-detail-fields";
 import { LocationFields } from "@/components/complaints/location-fields";
@@ -16,6 +17,7 @@ import {
   createComplaintDefaults,
   createComplaintSchema,
 } from "@/lib/validations/create-complaint";
+import { AiSuggestCard } from "./ai-suggest-card";
 
 export default function CreateComplaintForm() {
   const router = useRouter();
@@ -55,6 +57,17 @@ export default function CreateComplaintForm() {
             selectedId={watch("categoryId")}
           />
           <ComplaintDetailFields register={register} errors={errors} />
+          <AiSuggestCard
+            title={watch("title")}
+            description={watch("description")}
+            categories={categories.data ?? []}
+            onApply={(r) =>
+              setValue("categoryId", r.categoryId, {
+                shouldValidate: true,
+                shouldDirty: true,
+              })
+            }
+          />
           <LocationFields
             register={register}
             setValue={setValue}
