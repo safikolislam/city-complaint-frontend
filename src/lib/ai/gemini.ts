@@ -1,4 +1,4 @@
-const MODEL = process.env.GEMINI_MODEL ?? "gemini-2.5-flash";
+const MODEL = "gemini-3.8-flash";
 const ENDPOINT = `https://generativelanguage.googleapis.com/v1beta/models/${MODEL}:generateContent`;
 
 type GeminiResponse = {
@@ -22,7 +22,14 @@ export async function askGeminiJson(prompt: string): Promise<unknown> {
     signal: AbortSignal.timeout(15_000),
   });
 
-  if (!res.ok) throw new Error(`Gemini request failed (${res.status})`);
+  if (!res.ok) {
+    const body = await res.text().catch(() => "");
+    console.error(
+      `Gemini ${res.status} (model: ${MODEL}):`,
+      body.slice(0, 500),
+    );
+    throw new Error(`Gemini request failed (${res.status})`);
+  }
 
   const data = (await res.json()) as GeminiResponse;
   const text = data.candidates?.[0]?.content?.parts?.[0]?.text;
