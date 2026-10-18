@@ -71,7 +71,7 @@ export async function POST(req: NextRequest) {
 
       if (cleanHistory.length > 0) {
         const chat = ai.chats.create({
-          model: "models/gemini-2.0-flash",
+          model: "models/gemini-3.8-flash",
           history: cleanHistory,
           config: {
             systemInstruction: SYSTEM_PROMPT,
@@ -85,7 +85,7 @@ export async function POST(req: NextRequest) {
         reply = response.text ?? "Sorry, I could not generate a response.";
       } else {
         const response = await ai.models.generateContent({
-          model: "models/gemini-2.0-flash",
+          model: "models/gemini-3.8-flash",
           contents: lastUserMessage,
           config: {
             systemInstruction: SYSTEM_PROMPT,
