@@ -11,6 +11,7 @@ import { StatsSection } from "@/components/home/stats-section";
 import { CategoriesSection } from "@/components/home/categories-section";
 import { HowItWorksSection } from "@/components/home/how-it-works";
 import { HighlightsSection } from "@/components/home/highlights-section";
+import { MarqueeSection } from "@/components/home/marquee-section";
 
 
 export const metadata: Metadata = {
@@ -27,6 +28,7 @@ export default function HomePage() {
        <HowItWorksSection></HowItWorksSection>
        <CategoriesSection></CategoriesSection>
        <HighlightsSection></HighlightsSection>
+       <MarqueeSection></MarqueeSection>
        <StatsSection></StatsSection>
       <FaqPreview />
       <CtaSection />
