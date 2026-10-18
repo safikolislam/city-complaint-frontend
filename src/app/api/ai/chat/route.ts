@@ -19,14 +19,25 @@ How to file a complaint:
 3. Fill in title, description, category, and location
 4. Submit — you'll get a complaint ID to track it
 
-Answer questions about CityFix features, how to use it, complaint categories, and general city issues.
+PAID SERVICES available on CityFix:
+- New Water Connection: Apply for a new residential or commercial water line. Fee: ৳500 application fee. Processing time: 7-10 working days.
+- Water Connection Transfer: Transfer ownership of an existing water connection. Fee: ৳300. Processing time: 5-7 working days.
+- Drainage Connection: Connect your property to the city drainage system. Fee: ৳800. Processing time: 10-15 working days.
+To apply for paid services: Go to Dashboard → Services → Apply Now.
+
+PAYMENT METHOD:
+- All paid services are payable via bKash.
+- Send payment to our bKash number and mention your Application ID as reference.
+- After payment, upload the bKash transaction screenshot in your service application.
+
+Answer questions about CityFix features, how to use it, complaint categories, paid services, payment methods, and general city issues.
 Keep answers short (2-4 sentences), friendly, and helpful. Use simple English.
 If asked something unrelated to CityFix or city issues, politely redirect back to CityFix topics.`;
 
 const sleep = (ms: number) => new Promise((resolve) => setTimeout(resolve, ms));
 
 const MAX_RETRIES = 5;
-const RETRY_DELAYS = [500, 1000, 2000, 3000, 5000]; // ms
+const RETRY_DELAYS = [500, 1000, 2000, 3000, 5000];
 
 export async function POST(req: NextRequest) {
   const { messages } = (await req.json()) as {
@@ -41,16 +52,14 @@ export async function POST(req: NextRequest) {
     return NextResponse.json({ reply: "Please send a message." });
   }
 
-  // Build conversation history for context
   const history = messages
-    .slice(0, -1) // exclude the last message (we send it separately)
+    .slice(0, -1)
     .filter((m) => m.role === "user" || m.role === "assistant")
     .map((m) => ({
       role: m.role === "assistant" ? "model" : "user",
       parts: [{ text: m.content }],
     }));
 
-  // Ensure history starts with a user message
   const firstUserIdx = history.findIndex((m) => m.role === "user");
   const cleanHistory = firstUserIdx >= 0 ? history.slice(firstUserIdx) : [];
 
@@ -61,9 +70,8 @@ export async function POST(req: NextRequest) {
       let reply: string;
 
       if (cleanHistory.length > 0) {
-        // Use chat session for multi-turn conversation
         const chat = ai.chats.create({
-          model: "models/gemini-3.8-flash",
+          model: "models/gemini-2.0-flash",
           history: cleanHistory,
           config: {
             systemInstruction: SYSTEM_PROMPT,
@@ -76,9 +84,8 @@ export async function POST(req: NextRequest) {
         });
         reply = response.text ?? "Sorry, I could not generate a response.";
       } else {
-        // Single turn
         const response = await ai.models.generateContent({
-          model: "models/gemini-3.8-flash",
+          model: "models/gemini-2.0-flash",
           contents: lastUserMessage,
           config: {
             systemInstruction: SYSTEM_PROMPT,
@@ -96,7 +103,6 @@ export async function POST(req: NextRequest) {
         error,
       );
 
-      // Don't sleep after the last attempt
       if (attempt < MAX_RETRIES - 1) {
         await sleep(RETRY_DELAYS[attempt] ?? 5000);
       }
