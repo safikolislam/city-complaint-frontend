@@ -30,23 +30,32 @@ export async function PublicNavbar() {
           ))}
         </nav>
 
-        <div className="hidden items-center gap-2 md:flex">
+        <div className="flex items-center gap-2">
           <ThemeToggle />
-          {user && dashboardHref ? (
-            <UserMenu user={user} dashboardHref={dashboardHref} />
-          ) : (
-            <>
-              <Link href="/auth/login" className={buttonVariants({ variant: "ghost", size: "sm" })}>
-                Login
-              </Link>
-              <Link href="/auth/register" className={buttonVariants({ size: "sm" })}>
-                Register
-              </Link>
-            </>
-          )}
-        </div>
 
-        <MobileMenu user={user} dashboardHref={dashboardHref} />
+          <div className="hidden items-center gap-2 md:flex">
+            {user && dashboardHref ? (
+              <UserMenu user={user} dashboardHref={dashboardHref} />
+            ) : (
+              <>
+                <Link
+                  href="/auth/login"
+                  className={buttonVariants({ variant: "ghost", size: "sm" })}
+                >
+                  Login
+                </Link>
+                <Link
+                  href="/auth/register"
+                  className={buttonVariants({ size: "sm" })}
+                >
+                  Register
+                </Link>
+              </>
+            )}
+          </div>
+
+          <MobileMenu user={user} dashboardHref={dashboardHref} />
+        </div>
       </div>
     </header>
   );
